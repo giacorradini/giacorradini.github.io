@@ -19,6 +19,10 @@ p {
   text-align: justify;
 }
 
+li {
+  margin-bottom: 1em;
+}
+
 footer {
   margin-top: 1em;
   margin-bottom: 1em;
