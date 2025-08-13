@@ -7,9 +7,14 @@ body {
   background-color: #F0EFDD;
 }
 
-h1, h2, h3, h4, nav {
+h1, h2, h3, h4 {
   margin-top: 0;
   margin-bottom: 1em
+}
+
+nav {
+  margin-top: 0;
+  margin-bottom: 3em
 }
 
 h1, nav, footer {
