@@ -16,6 +16,10 @@ h1, nav, footer {
   text-align: center;
 }
 
+nav {
+margin-bottom: 1em
+}
+
 p {
   text-align: justify;
 }
