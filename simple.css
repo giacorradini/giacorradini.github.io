@@ -7,8 +7,9 @@ body {
   background-color: #F0EFDD;
 }
 
-h1 {
+h1, h2, h3, h4 {
   margin-top: 0;
+  margin-bottom: 1em
 }
 
 h1, nav, footer {
