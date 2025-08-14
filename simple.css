@@ -17,6 +17,12 @@ h1, h2, h3, h4 {
 
 h1, nav, footer { text-align: center; }
 
+/* ---------------- Paragraph ---------------- */
+
+p {
+  margin-bottom: 0.25em; /* reduce space between paragraphs */
+}
+
 /* ---------------- Navigation & Footer ---------------- */
 nav { 
   margin-bottom: 3em; 
