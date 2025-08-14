@@ -62,8 +62,8 @@ a {
   text-decoration: none;
 }
 
-.center {
-  text-align: center;
+.margin-quarter {
+  margin: 0.25em;
 }
 
 code {
