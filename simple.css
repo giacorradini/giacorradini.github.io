@@ -17,10 +17,6 @@ h1, nav, footer { text-align: center; }
 
 /* ---------------- Paragraph & Lists---------------- */
 
-p {
-  margin-bottom: 0.25em; /* reduce space between paragraphs */
-}
-
 p + li { margin-bottom: 2em; }
 li { margin-bottom: 1em; }
 
