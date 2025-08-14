@@ -1,101 +1,102 @@
+/* ---------------- Body & Global ---------------- */
 body {
   font-family: 'San Francisco', 'Segoe UI', 'Open Sans', sans-serif;
   margin: 0 auto;
   max-width: min(100%, 210mm);
   padding: 2em 1em 0;
   background-color: #F0EFDD;
-}
-
-/* Mobile adjustments */
-@media (max-width: 600px) {
-  body {
-    font-size: 0.95em;   /* slightly smaller text for small screens */
-    padding: 1.5em 0.75em 0; /* tighter padding */
-  }
-}
-
-/* Print adjustments */
-@media print {
-  body {
-    background: none;            /* remove background color */
-    color: #000;                  /* ensure dark text */
-    max-width: 210mm;             /* fit A4 page width */
-    padding: 0;                   /* no page padding */
-    margin: 0;                    /* no extra margins */
-    font-size: 12pt;               /* standard print font size */
-  }
-}
-
-h1, h2, h3, h4 {
-  margin-top: 0;
-  margin-bottom: 1em
-}
-
-nav {
-  margin-top: 0;
-  margin-bottom: 3em
-}
-
-h1, nav, footer {
-  text-align: center;
-}
-
-p + li {
-  margin-bottom: 2em
-}
-
-p {
   text-align: justify;
+  line-height: 1.6; /* better readability */
+  color: #111;
 }
 
-li {
-  margin-bottom: 1em;
+/* ---------------- Headings ---------------- */
+h1, h2, h3, h4 {
+  margin: 0 0 1em;
+  line-height: 1.2;
 }
 
-footer {
-  margin-top: 5em;
-  margin-bottom: 1em;
-}
+h1 { font-size: 2.5em; }
+h2 { font-size: 2em; }
+h3 { font-size: 1.5em; }
+h4 { font-size: 1.2em; }
 
-a {
-  color: blue;
-  text-decoration: none;
-}
+h1, nav, footer { text-align: center; }
 
-.margin-quarter {
-  margin: 0.25em;
-}
+/* ---------------- Navigation & Footer ---------------- */
+nav { margin-bottom: 3em; }
+footer { margin: 5em 0 1em; }
 
+/* ---------------- Paragraphs & Lists ---------------- */
+p + li { margin-bottom: 2em; }
+li { margin-bottom: 1em; }
+
+/* ---------------- Links ---------------- */
+a { color: blue; text-decoration: none; transition: color 0.2s; }
+a:hover { color: darkblue; }
+
+/* ---------------- Utility ---------------- */
+.margin-quarter { margin: 0.25em; }
+
+/* ---------------- Code ---------------- */
 code {
   font-family: 'Menlo', 'Fira Mono', monospace;
-  padding: .05em .1em;
+  padding: 0.05em 0.1em;
   background-color: Gainsboro;
-  border-radius: .2em;
+  border-radius: 0.2em;
   white-space: pre-wrap;
 }
 
+/* ---------------- Images ---------------- */
 img {
   display: block;
   margin: 0 auto;
   max-width: 100%;
+  height: auto; /* maintain aspect ratio */
 }
 
+/* ---------------- Cookies Policy ---------------- */
 .cookies_policy {
   position: fixed;
   bottom: 0;
-  background: white;
+  background: #fff;
   padding: 0 0.2em;
   margin: 0 auto;
   border: 1px solid;
   border-radius: 5px;
-
 }
 
-.cookies_policy + footer {
-  margin-bottom: 2em;
+.cookies_policy + footer { margin-bottom: 2em; }
+p.cookies_policy span { color: blue; cursor: pointer; }
+
+/* ---------------- Mobile adjustments ---------------- */
+@media (max-width: 600px) {
+  body {
+    font-size: 0.95em;
+    padding: 1.5em 0.75em 0;
+  }
+
+  h1 { font-size: 2em; }
+  h2 { font-size: 1.75em; }
+  h3 { font-size: 1.25em; }
+  h4 { font-size: 1.1em; }
+
+  nav, footer { margin: 2em 0; }
+  li { margin-bottom: 0.8em; }
 }
 
-p.cookies_policy span {
-  color: blue;
-  cursor: pointer;
+/* ---------------- Print adjustments ---------------- */
+@media print {
+  body {
+    background: none;
+    color: #000;
+    max-width: 210mm;
+    margin: 0;
+    padding: 0;
+    font-size: 12pt;
+    line-height: 1.4;
+  }
+
+  a { color: #000; text-decoration: underline; } /* show links in print */
+  nav, .cookies_policy { display: none; } /* hide nav and cookies */
 }
