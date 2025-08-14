@@ -26,6 +26,8 @@ h1, nav, footer { text-align: center; }
 /* ---------------- Navigation & Footer ---------------- */
 nav { 
   margin-bottom: 3em; 
+  border-bottom: 1px solid #ccc; /* grey line like footer */
+  padding-bottom: 1em;          /* space between nav content and the line */
 }
 
 footer { 
