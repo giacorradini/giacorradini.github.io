@@ -50,15 +50,11 @@ code {
   white-space: pre-wrap;
 }
 
-<!-- 
-
 img {
   display: block;
   margin: 0 auto;
   max-width: 100%;
 }
-
--->
 
 .cookies_policy {
   position: fixed;
