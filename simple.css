@@ -17,11 +17,15 @@ h1, h2, h3, h4 {
 
 h1, nav, footer { text-align: center; }
 
-/* ---------------- Paragraph ---------------- */
+/* ---------------- Paragraph & Lists---------------- */
 
 p {
   margin-bottom: 0.25em; /* reduce space between paragraphs */
+  line-height: 1;     /* less space between lines inside a paragraph */
 }
+
+p + li { margin-bottom: 2em; }
+li { margin-bottom: 1em; }
 
 /* ---------------- Navigation & Footer ---------------- */
 nav { 
@@ -35,10 +39,6 @@ footer {
   border-top: 1px solid #ccc; /* grey line */
   padding-top: 1em;           /* space between line and footer content */
 }
-
-/* ---------------- Paragraphs & Lists ---------------- */
-p + li { margin-bottom: 2em; }
-li { margin-bottom: 1em; }
 
 /* ---------------- Links ---------------- */
 a {
