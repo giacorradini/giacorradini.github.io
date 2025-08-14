@@ -1,0 +1,74 @@
+body {
+  font-family: 'San Francisco', 'Segoe UI', 'Open Sans', sans-serif;
+  margin: 0 auto;
+  max-width: 210mm;
+  padding: 0 1em;
+  padding-top: 2em;
+  background-color: #F0EFDD;
+}
+
+h1, h2, h3, h4 {
+  margin-top: 0;
+  margin-bottom: 0.5em
+}
+
+nav {
+  margin-top: 0;
+  margin-bottom: 3em
+}
+
+h1, nav, footer {
+  text-align: center;
+}
+
+footer {
+  margin-top: 5em;
+  margin-bottom: 1em;
+}
+
+a {
+  color: blue;
+  text-decoration: none;
+}
+
+.center {
+  text-align: center;
+}
+
+code {
+  font-family: 'Menlo', 'Fira Mono', monospace;
+  padding: .05em .1em;
+  background-color: Gainsboro;
+  border-radius: .2em;
+  white-space: pre-wrap;
+}
+
+<!-- 
+
+img {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+}
+
+-->
+
+.cookies_policy {
+  position: fixed;
+  bottom: 0;
+  background: white;
+  padding: 0 0.2em;
+  margin: 0 auto;
+  border: 1px solid;
+  border-radius: 5px;
+
+}
+
+.cookies_policy + footer {
+  margin-bottom: 2em;
+}
+
+p.cookies_policy span {
+  color: blue;
+  cursor: pointer;
+}
