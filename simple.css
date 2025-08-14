@@ -17,6 +17,13 @@ h1, nav, footer { text-align: center; }
 
 /* ---------------- Paragraph & Lists---------------- */
 
+p + h1,
+p + h2,
+p + h3,
+p + h4 {
+  margin-top: 1em; /* adjust the space as needed */
+}
+
 p + li { margin-bottom: 2em; }
 li { margin-bottom: 1em; }
 
