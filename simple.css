@@ -6,7 +6,6 @@ body {
   padding: 2em 1em 0;
   background-color: #F0EFDD;
   text-align: justify;
-  line-height: 1.6; /* better readability */
   color: #111;
 }
 
@@ -21,7 +20,6 @@ h1, nav, footer { text-align: center; }
 
 p {
   margin-bottom: 0.25em; /* reduce space between paragraphs */
-  line-height: 1;     /* less space between lines inside a paragraph */
 }
 
 p + li { margin-bottom: 2em; }
