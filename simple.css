@@ -1,9 +1,29 @@
 body {
   font-family: 'San Francisco', 'Segoe UI', 'Open Sans', sans-serif;
   margin: 0 auto;
-  max-width: 210mm;
-  padding: 2em 1em;
+  max-width: min(100%, 210mm);
+  padding: 2em 1em 0;
   background-color: #F0EFDD;
+}
+
+/* Mobile adjustments */
+@media (max-width: 600px) {
+  body {
+    font-size: 0.95em;   /* slightly smaller text for small screens */
+    padding: 1.5em 0.75em 0; /* tighter padding */
+  }
+}
+
+/* Print adjustments */
+@media print {
+  body {
+    background: none;            /* remove background color */
+    color: #000;                  /* ensure dark text */
+    max-width: 210mm;             /* fit A4 page width */
+    padding: 0;                   /* no page padding */
+    margin: 0;                    /* no extra margins */
+    font-size: 12pt;               /* standard print font size */
+  }
 }
 
 h1, h2, h3, h4 {
@@ -54,15 +74,11 @@ code {
   white-space: pre-wrap;
 }
 
-<!-- 
-
 img {
   display: block;
   margin: 0 auto;
   max-width: 100%;
 }
-
--->
 
 .cookies_policy {
   position: fixed;
