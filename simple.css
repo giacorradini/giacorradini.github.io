@@ -52,6 +52,20 @@ a {
 /* ---------------- Utility ---------------- */
 .margin-quarter { margin: 0.25em; }
 
+/* Make PDF icons inline with the text in list items */
+li a img {
+  width: 16px;
+  height: 16px;
+  vertical-align: middle; /* aligns icon with text */
+  display: inline;        /* ensures the image stays inline */
+  margin-left: 0.2em;     /* small space between text and icon */
+}
+
+/* Add spacing before Source Code links */
+li a + a {
+  margin-left: 0.5em;     /* space between PDF icon and Source Code link */
+}
+
 /* ---------------- Code ---------------- */
 code {
   font-family: 'Menlo', 'Fira Mono', monospace;
