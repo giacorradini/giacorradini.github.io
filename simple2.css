@@ -9,6 +9,13 @@ body {
 
 p { margin:0.25em}
 
+p + h1,
+p + h2,
+p + h3,
+p + h4 {
+  margin-top: 0.5em;
+}
+
 h1, h2, h3, h4 {
   margin-top: 0;
   margin-bottom: 0.5em
