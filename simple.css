@@ -1,0 +1,132 @@
+/* ---------------- Body & Global ---------------- */
+body {
+  font-family: 'San Francisco', 'Segoe UI', 'Open Sans', sans-serif;
+  margin: 0 auto;
+  max-width: min(100%, 210mm);
+  padding: 2em 1em 0;
+  background-color: #F0EFDD;
+  text-align: justify;
+}
+
+/* ---------------- Headings ---------------- */
+h1, h2, h3, h4 {
+  margin: 0 0 1em;
+}
+
+h1, nav, footer { text-align: center; }
+
+/* ---------------- Paragraph & Lists---------------- */
+
+p + h1,
+p + h2,
+p + h3,
+p + h4 {
+  margin-top: 1em; /* adjust the space as needed */
+}
+
+p + ul,
+p + ol {
+  margin-top: 1em; /* space between paragraph and list */
+}
+
+li { margin-bottom: 1em; }
+
+/* ---------------- Navigation & Footer ---------------- */
+nav { 
+  margin-bottom: 3em; 
+  border-bottom: 1px solid #ccc; /* grey line like footer */
+  padding-bottom: 1em;          /* space between nav content and the line */
+}
+
+footer { 
+  margin: 5em 0 1em; 
+  border-top: 1px solid #ccc; /* grey line */
+  padding-top: 1em;           /* space between line and footer content */
+}
+
+/* ---------------- Links ---------------- */
+a {
+  color: blue; text-decoration: none
+}
+
+/* ---------------- Utility ---------------- */
+.margin-quarter { margin: 0.25em; }
+
+/* Make PDF icons inline with the text in list items */
+li a img {
+  width: 16px;
+  height: 16px;
+  vertical-align: middle; /* aligns icon with text */
+  display: inline;        /* ensures the image stays inline */
+  margin-left: 0.2em;     /* small space between text and icon */
+}
+
+/* Add spacing before Source Code links */
+li a + a {
+  margin-left: 0.5em;     /* space between PDF icon and Source Code link */
+}
+
+/* ---------------- Articles ---------------- */
+article {
+  margin-bottom: 3em;        /* space after each article */
+  padding-bottom: 1.5em;     /* space inside before the divider */
+  border-bottom: 1px solid #ccc; /* subtle grey line separator */
+}
+
+article h3 {
+  font-size: 1.5em;       /* make titles larger */
+  margin-bottom: 0.5em;   /* small gap below the title */
+  color: #333366;         /* deep bluish tone for distinction */
+  text-align: left;       /* align left for readability */
+}
+
+article:last-of-type {
+  border-bottom: none;       /* remove line after the last article */
+}
+
+/* ---------------- Code ---------------- */
+code {
+  font-family: 'Menlo', 'Fira Mono', monospace;
+  padding: 0.05em 0.1em;
+  background-color: Gainsboro;
+  border-radius: 0.2em;
+  white-space: pre-wrap;
+}
+
+/* ---------------- Images ---------------- */
+img {
+  display: block;       /* ensures margins work consistently */
+  margin: 1em auto;     /* 1em top & bottom, auto left/right to center */
+  max-width: 100%;
+  height: auto;
+}
+
+/* ---------------- Cookies Policy ---------------- */
+.cookies_policy {
+  position: fixed;
+  bottom: 0;
+  background: #fff;
+  padding: 0 0.2em;
+  margin: 0 auto;
+  border: 1px solid;
+  border-radius: 5px;
+}
+
+.cookies_policy + footer { margin-bottom: 2em; }
+p.cookies_policy span { color: blue; cursor: pointer; }
+
+/* ---------------- Mobile adjustments ---------------- */
+@media (max-width: 600px) {
+  body {
+    font-size: 0.95em;
+    padding: 1.5em 0.75em 0;
+  }
+
+  h1 { font-size: 2em; }
+  h2 { font-size: 1.75em; }
+  h3 { font-size: 1.25em; }
+  h4 { font-size: 1.1em; }
+
+  nav, footer { margin: 2em 0; }
+  li { margin-bottom: 0.8em; }
+}
