@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en'>
+  <head>
+    
+    <meta charset='utf-8' />
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=2.0' />
+    <meta name='author' content='Gianmarco Corradini' />
+    <meta name='description' content='Personal site about Economics, Finance, Computational Theory.' />
+    <meta name='keywords' content='personal, website, economics, articles, books, finance, informatics' />
+
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@4.0.0/tex-mml-chtml.js"></script>
+    
+    <title>Gianmarco Corradini</title>
+    
+    <link rel="stylesheet" type="text/css" href="simple.css" />
+    
+  </head>
+  
+  	<body>
+  
+
+	<h2>Salary Depreciation Calculator</h2>
+
+	<label for="salary">Salary:</label>
+	<input type="number" id="salary" placeholder="Enter salary" step="0.01" />
+
+	<label for="saved">% Saved:</label>
+	<input type="number" id="saved" placeholder="Enter % saved" step="0.01" />
+
+	<button onclick="calculate()">Calculate</button>
+
+	<pre id="output">Results will appear here.</pre>
+
+	<script>
+	function calculate() {
+    const salaryInput = document.getElementById("salary").value;
+    const savedInput = document.getElementById("saved").value;
+    const output = document.getElementById("output");
+
+    const salary = parseFloat(salaryInput);
+    const savedPercent = parseFloat(savedInput);
+
+    if (isNaN(salary) || isNaN(savedPercent)) {
+        output.textContent = "Please enter valid numbers.";
+        return;
+    }
+
+    const inflationRate = 0.02;
+    const years = 10;
+    let result = `Nominal Salary: ${salary.toFixed(2)}\nSaved Percentage: ${savedPercent.toFixed(1)}%\n\n`;
+
+    for (let year = 1; year <= years; year++) {
+        const realSalary = salary / Math.pow(1 + inflationRate, year);
+        const depreciationPercent = (1 - realSalary / salary) * 100;
+        const savedAmountReal = (savedPercent / 100) * realSalary;
+
+        result += `Year ${year}: Depreciation = ${depreciationPercent.toFixed(2)}%, Real Savings = ${savedAmountReal.toFixed(2)}\n`;
+    }
+
+    output.textContent = result;
+	}
+	</script>
+
+	</body>
+</html>
