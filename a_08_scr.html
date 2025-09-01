@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Salary Depreciation Calculator</title>
+    <link rel="stylesheet" href="../simple.css">
+    <style>
+        /* Extra styling for the calculator box */
+        .calculator-box {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            padding: 1em;
+            margin-top: 2em;
+        }
+
+        .calculator-box label {
+            display: block;
+            margin-top: 0.75em;
+            font-weight: bold;
+        }
+
+        .calculator-box input {
+            width: 200px;
+            padding: 0.4em;
+            margin-top: 0.3em;
+        }
+
+        .calculator-box button {
+            margin-top: 1em;
+            padding: 0.6em 1.2em;
+            font-size: 1em;
+            cursor: pointer;
+        }
+
+        .calculator-box pre {
+            background-color: #f4f4f4;
+            padding: 0.8em;
+            margin-top: 1em;
+            white-space: pre-wrap;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+<article>
+  <h2>Salary Depreciation Calculator</h2>
+
+  <div class="calculator-box">
+      <label for="salary">Salary:</label>
+      <input type="number" id="salary" placeholder="Enter salary" step="0.01" />
+
+      <label for="saved">% Saved:</label>
+      <input type="number" id="saved" placeholder="Enter % saved" step="0.01" />
+
+      <button onclick="calculate()">Calculate</button>
+
+      <pre id="output">Results will appear here.</pre>
+  </div>
+</article>
+
+<script>
+function calculate() {
+    const salaryInput = document.getElementById("salary").value;
+    const savedInput = document.getElementById("saved").value;
+    const output = document.getElementById("output");
+
+    const salary = parseFloat(salaryInput);
+    const savedPercent = parseFloat(savedInput);
+
+    if (isNaN(salary) || isNaN(savedPercent)) {
+        output.textContent = "Please enter valid numbers.";
+        return;
+    }
+
+    const inflationRate = 0.02;
+    const years = 10;
+    let result = `Nominal Salary: ${salary.toFixed(2)}\nSaved Percentage: ${savedPercent.toFixed(1)}%\n\n`;
+
+    for (let year = 1; year <= years; year++) {
+        const realSalary = salary / Math.pow(1 + inflationRate, year);
+        const depreciationPercent = (1 - realSalary / salary) * 100;
+        const savedAmountReal = (savedPercent / 100) * realSalary;
+
+        result += `Year ${year}: Depreciation = ${depreciationPercent.toFixed(2)}%, Real Savings = ${savedAmountReal.toFixed(2)}\n`;
+    }
+
+    output.textContent = result;
+}
+</script>
+
+</body>
+</html>
