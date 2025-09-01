@@ -130,3 +130,47 @@ p.cookies_policy span { color: blue; cursor: pointer; }
   nav, footer { margin: 2em 0; }
   li { margin-bottom: 0.8em; }
 }
+
+/* ---------------- Calculator Box ---------------- */
+.calculator-box {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 1em;
+  margin-top: 2em;
+}
+
+.calculator-box label {
+  display: block;
+  margin-top: 0.75em;
+  font-weight: bold;
+}
+
+.calculator-box input {
+  width: 200px;
+  padding: 0.4em;
+  margin-top: 0.3em;
+}
+
+.calculator-box button {
+  margin-top: 1em;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  cursor: pointer;
+  border: 1px solid #999;
+  border-radius: 4px;
+  background-color: #f8f8f8;
+}
+
+.calculator-box button:hover {
+  background-color: #e0e0e0;
+}
+
+.calculator-box pre {
+  background-color: #f4f4f4;
+  padding: 0.8em;
+  margin-top: 1em;
+  white-space: pre-wrap;
+  border-radius: 4px;
+  font-family: 'Menlo', 'Fira Mono', monospace;
+}
