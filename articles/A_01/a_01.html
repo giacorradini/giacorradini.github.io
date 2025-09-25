@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>The Effects of a Restrictive Monetary Policy on Risky Firms in Capital Market Theory</title>
+  <link rel="stylesheet" href="../simple.css">
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+</head>
+<body>
+
+  <header>
+    <h1>The Effects of a Restrictive Monetary Policy on Risky Firms in Capital Market Theory</h1>
+    <h2>An Explanatory Study on the German Financial Market</h2>
+    <p><em>Gianmarco Corradini, MS — 2023</em></p>
+  </header>
+
+  <article>
+    <h3>Abstract</h3>
+    <p>
+      This paper investigates the theoretical and empirical relationship between restrictive monetary policy and the performance of risky firms within the framework of Capital Market Theory. Building upon Markowitz's portfolio model, we explore whether an increase in the risk-free rate shifts the market portfolio towards higher risk and return, both in the short and long run. Using data from the German financial market between July 2022 and July 2025, we test the transmission of monetary policy to government bond yields, and subsequently, to the DAX40 index as a proxy for the market portfolio. Empirical analysis, based on time-lagged correlations and regression models, shows no significant link between changes in ECB interest rates and the risk or return of the German equity market. The results highlight the limitations of Capital Market Theory in capturing the dynamics of monetary policy transmission, suggesting that alternative mechanisms such as expectations and macroeconomic fundamentals may play a more prominent role.
+    </p>
+  </article>
+
+  <article>
+    <h3>Introduction</h3>
+    <p>
+      The purpose of this article is to test the theoretical implications of Capital Market Theory concerning the effects of a restrictive monetary policy. Specifically, three research questions guide this study:
+    </p>
+    <ol>
+      <li>Does a restrictive monetary policy reduce the risk of the market portfolio?</li>
+      <li>If so, do the short-run effects persist in the long run?</li>
+      <li>If not, what are the long-run implications for the market portfolio?</li>
+    </ol>
+  </article>
+
+  <article>
+    <h3>Method</h3>
+    <p>
+      The theoretical foundation and starting point of the following discussion is the model known as the "Capital Market Theory," also referred to as the "Markowitz Bullet" (Markowitz, 1952). In brief, the market is composed of \(N\) assets which are combined to form each portfolio, based on the risk-return trade-off.
+    </p>
+
+    <p>Formally:</p>
+    <p>\[
+      \mu_{p}=\sum_{i \in M} w_{i}\cdot E(i)
+    \]</p>
+    <p>\[
+      \sigma_{p}=\sum_{i \in M} w_{i}^{2}\cdot Var(i) + \sum_{i, j \in M , i \neq j} w_{i}\cdot w_{j} \cdot Covar(i, j)
+    \]</p>
+
+    <p>
+      Where \(M\) is the set of all assets available in the market, \(w\) the weights, and \(E(\cdot)\), \(Var(\cdot)\), \(Covar(\cdot,\cdot)\) are respectively the expected value, variance, and covariance.
+    </p>
+
+    <p>
+      The efficient frontier can be summarized by:
+    </p>
+
+    <p>\[
+      \mu_{1}(\sigma)= (\sigma - \alpha)^{\gamma} + \beta
+    \]</p>
+    <p>\[
+      \alpha, \beta, \gamma > 0, \quad \gamma \in (0,1)
+    \]</p>
+
+    <p>
+      With a risk-free rate \(\mu_{0}\), the frontier becomes:
+    </p>
+
+    <p>\[
+      \mu_{2}(\sigma)=a \cdot \sigma + \mu_{0}, \quad a > 0
+    \]</p>
+
+    <figure>
+      <img src="Figure_1.jpg" alt="Efficient frontier of possible portfolios">
+      <figcaption>Efficient frontier of possible portfolios</figcaption>
+    </figure>
+  </article>
+
+  <article>
+    <h3>Results</h3>
+
+    <h4>Transmission to Government Bonds</h4>
+    <p>
+      The first hypothesis tests whether monetary policy transmits directly to government bond yields. 
+    </p>
+    <img src="figure_1.png" alt="Correlation between ECB policy rates and German bond ETF returns">
+    <p><em>Correlation between ECB policy rates and German bond ETF returns.</em></p>
+
+    <h4>Market Portfolio Returns</h4>
+    <img src="figure_2.png" alt="Correlation between ECB policy rates and DAX40 returns">
+    <p><em>Correlation between ECB policy rates and DAX40 returns.</em></p>
+
+    <h4>Market Portfolio Risk</h4>
+    <img src="figure_3.png" alt="Market portfolio volatility (30-day rolling window)">
+    <p><em>Market portfolio volatility (30-day rolling window) in relation to ECB policy changes.</em></p>
+
+    <h4>Robustness Checks</h4>
+    <img src="figure_4.png" alt="Additional regression diagnostics">
+    <p><em>Additional regression diagnostics.</em></p>
+    <img src="figure_5.png" alt="Alternative lag structures">
+    <p><em>Alternative lag structures.</em></p>
+    <img src="figure_6.png" alt="Residual-based robustness check">
+    <p><em>Residual-based robustness check.</em></p>
+  </article>
+
+  <article>
+    <h3>Discussion</h3>
+    <p>
+      The empirical results challenge the predictions of Capital Market Theory regarding the transmission of monetary policy to financial markets. Despite the theoretical expectation that higher interest rates shift the market portfolio towards higher risk and return, the German data provide no evidence of such effects.
+    </p>
+    <p>
+      Several explanations may account for this outcome. First, monetary policy transmission channels are more complex than those captured by the Markowitz framework, involving expectations, international spillovers, and heterogeneous sectoral responses. Second, the DAX40 may not fully represent the market portfolio, though it remains a widely accepted benchmark. Third, equity markets may be driven primarily by growth expectations and global factors, which can overshadow domestic monetary policy shocks.
+    </p>
+  </article>
+
+  <article>
+    <h3>Conclusion</h3>
+    <p>
+      This study examined the effects of restrictive monetary policy on risky firms within the framework of Capital Market Theory, using the German financial market as a case study. The empirical analysis, covering the period of ECB rate hikes and subsequent cuts between 2022 and 2025, found no robust correlation between monetary policy changes and the risk or return of the DAX40 index.
+    </p>
+    <p>
+      The findings suggest that Capital Market Theory, while valuable for theoretical insights, fails to capture the mechanisms by which monetary policy influences equity markets. Policymakers and researchers should therefore consider alternative frameworks that incorporate expectations, cross-market linkages, and macroeconomic fundamentals.
+    </p>
+  </article>
+
+  <footer>
+    <h3>References</h3>
+    <p>Markowitz, H. (1952). Portfolio Selection. <em>Journal of Finance</em>, 7(1), 77–91.</p>
+    <p>European Central Bank (ECB). Monetary policy decisions and data releases.</p>
+  </footer>
+
+</body>
+</html>
