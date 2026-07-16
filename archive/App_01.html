@@ -26,7 +26,575 @@
     
     <h3>Gianmarco Corradini, 16.07.2026</h3>
     
-      
+     <p><strong>BinaryStat</strong> began as a personal project. I wanted a simple way to record events from everyday life as binary variables and then analyse their relationships objectively.</p>
+
+<p>Each event is represented by a binary value:</p>
+
+<p>\[
+y_t \in \{0,1\}
+\]</p>
+
+<p>A value of \(1\) indicates that an event occurred on day \(t\). If the event is not recorded during that day, BinaryStat automatically assigns the value \(0\).</p>
+
+<p>The central question behind the application is: <strong>which events trigger or predict other events in my life?</strong></p>
+
+<p>Most habit-tracking applications primarily count how often an activity occurs. BinaryStat was developed to go further by identifying temporal trends and statistical associations hidden within daily behavioral data.</p>
+
+<p>The objective is not simply to collect observations, but to transform personal records into testable evidence about patterns of behavior.</p>
+
+<p>BinaryStat allows users to record binary events, automatically assign zero values to missing days, estimate temporal trends, compare variables, test statistical significance, and generate plain-language interpretations of the results.</p>
+
+<p>The application can be used to investigate questions such as whether coffee consumption is associated with anxiety, whether exercise tends to coincide with lower stress, whether meditation corresponds to improved sleep, which recorded behaviors are most strongly related, and whether the frequency of a particular event is increasing or decreasing over time.</p>
+
+<p>I initially developed BinaryStat exclusively for my own use. After finding it useful for personal behavioral analysis, I decided to prepare it for publication so that others could use the same approach to study their own data.</p>
+
+<p><strong>Google Play Store release coming soon.</strong></p>
+
+<p>BinaryStat is designed for longitudinal analysis of binary event data. For each selected variable, the application constructs a complete daily time series:</p>
+
+<p>\[
+\mathbf{y}
+=
+\begin{bmatrix}
+y_1 & y_2 & \cdots & y_T
+\end{bmatrix}^{\top},
+\qquad
+y_t \in \{0,1\}.
+\]</p>
+
+<p>Here, \(T\) is the number of calendar days in the selected analysis period. Recorded events receive \(y_t=1\), while unrecorded days receive \(y_t=0\).</p>
+
+<p>The arithmetic mean is calculated as:</p>
+
+<p>\[
+\bar{y}
+=
+\frac{1}{T}
+\sum_{t=1}^{T} y_t.
+\]</p>
+
+<p>For a binary variable, the mean is equal to the empirical proportion of days on which the event occurred:</p>
+
+<p>\[
+\bar y
+=
+\widehat{\Pr}(Y=1).
+\]</p>
+
+<p>BinaryStat calculates the population variance:</p>
+
+<p>\[
+\sigma_y^2
+=
+\frac{1}{T}
+\sum_{t=1}^{T}
+(y_t-\bar y)^2,
+\]</p>
+
+<p>and the corresponding population standard deviation:</p>
+
+<p>\[
+\sigma_y
+=
+\sqrt{
+\frac{1}{T}
+\sum_{t=1}^{T}
+(y_t-\bar y)^2
+}.
+\]</p>
+
+<p>For a Bernoulli variable with event probability \(p\), the theoretical variance is:</p>
+
+<p>\[
+\operatorname{Var}(Y)
+=
+p(1-p),
+\]</p>
+
+<p>and the standard deviation is:</p>
+
+<p>\[
+\operatorname{SD}(Y)
+=
+\sqrt{p(1-p)}.
+\]</p>
+
+<p>BinaryStat estimates a linear temporal trend using the model:</p>
+
+<p>\[
+y_t
+=
+\beta_0
++
+\beta_1 t
++
+\varepsilon_t.
+\]</p>
+
+<p>In this model, \(y_t\) is the binary outcome observed on day \(t\), \(t\) is the number of elapsed calendar days since the beginning of the selected period, \(\beta_0\) is the estimated initial level, \(\beta_1\) is the estimated daily change in event probability, and \(\varepsilon_t\) is the time-dependent error term.</p>
+
+<p>Because the dependent variable is binary, this specification is a linear probability model. The slope has the interpretation:</p>
+
+<p>\[
+\beta_1
+=
+\frac{
+\text{change in estimated event probability}
+}{
+\text{one calendar day}
+}.
+\]</p>
+
+<p>Expressed in percentage points per day:</p>
+
+<p>\[
+\Delta_{\text{daily}}
+=
+100\beta_1.
+\]</p>
+
+<p>Over an interval of \(D\) days, the estimated total change is:</p>
+
+<p>\[
+\Delta_D
+=
+100D\beta_1
+\]</p>
+
+<p>percentage points.</p>
+
+<p>BinaryStat uses feasible Generalized Least Squares rather than relying exclusively on Ordinary Least Squares.</p>
+
+<p>In matrix notation, the trend model is:</p>
+
+<p>\[
+\mathbf{y}
+=
+X\boldsymbol{\beta}
++
+\boldsymbol{\varepsilon}.
+\]</p>
+
+<p>The residuals satisfy:</p>
+
+<p>\[
+\operatorname{E}
+(
+\boldsymbol{\varepsilon}
+)
+=
+\mathbf{0},
+\qquad
+\operatorname{Var}
+(
+\boldsymbol{\varepsilon}
+)
+=
+\Omega.
+\]</p>
+
+<p>When \(\Omega\neq\sigma^2I\), the observations are not conditionally independent and identically distributed. The GLS estimator is:</p>
+
+<p>\[
+\widehat{\boldsymbol{\beta}}_{\mathrm{GLS}}
+=
+\left(
+X^{\top}
+\Omega^{-1}
+X
+\right)^{-1}
+X^{\top}
+\Omega^{-1}
+\mathbf{y}.
+\]</p>
+
+<p>In contrast, the OLS estimator is:</p>
+
+<p>\[
+\widehat{\boldsymbol{\beta}}_{\mathrm{OLS}}
+=
+\left(
+X^{\top}X
+\right)^{-1}
+X^{\top}\mathbf{y}.
+\]</p>
+
+<p>GLS explicitly incorporates the estimated covariance structure of the residual process.</p>
+
+<p>BinaryStat assumes that the residuals may follow a first-order autoregressive process:</p>
+
+<p>\[
+\varepsilon_t
+=
+\rho\varepsilon_{t-1}
++
+u_t.
+\]</p>
+
+<p>The innovation term satisfies:</p>
+
+<p>\[
+u_t
+\sim
+\left(
+0,
+\sigma_u^2
+\right),
+\qquad
+|\rho|<1.
+\]</p>
+
+<p>Under a stationary AR(1) process:</p>
+
+<p>\[
+\operatorname{Cov}
+(
+\varepsilon_t,
+\varepsilon_s
+)
+=
+\frac{\sigma_u^2}{1-\rho^2}
+\rho^{|t-s|}.
+\]</p>
+
+<p>The corresponding covariance matrix has the form:</p>
+
+<p>\[
+\Omega
+=
+\frac{\sigma_u^2}{1-\rho^2}
+\begin{bmatrix}
+1 & \rho & \rho^2 & \cdots \\
+\rho & 1 & \rho & \cdots \\
+\rho^2 & \rho & 1 & \cdots \\
+\vdots & \vdots & \vdots & \ddots
+\end{bmatrix}.
+\]</p>
+
+<p>The AR(1) coefficient is initially estimated from OLS residuals:</p>
+
+<p>\[
+\widehat{\rho}
+=
+\frac{
+\sum_{t=2}^{T}
+\widehat{\varepsilon}_t
+\widehat{\varepsilon}_{t-1}
+}{
+\sum_{t=2}^{T}
+\widehat{\varepsilon}_{t-1}^{\,2}
+}.
+\]</p>
+
+<p>To avoid unstable boundary estimates, the application constrains the estimated value to:</p>
+
+<p>\[
+-0.99
+\le
+\widehat{\rho}
+\le
+0.99.
+\]</p>
+
+<p>After estimating \(\rho\), BinaryStat applies an AR(1) transformation. For observations \(t\ge2\):</p>
+
+<p>\[
+y_t^{*}
+=
+y_t
+-
+\widehat{\rho}y_{t-1},
+\]</p>
+
+<p>\[
+x_t^{*}
+=
+x_t
+-
+\widehat{\rho}x_{t-1},
+\]</p>
+
+<p>while the transformed intercept regressor is:</p>
+
+<p>\[
+c_t^{*}
+=
+1-\widehat{\rho}.
+\]</p>
+
+<p>The first observation receives the Prais–Winsten weight:</p>
+
+<p>\[
+w_1
+=
+\sqrt{
+1-\widehat{\rho}^{\,2}
+}.
+\]</p>
+
+<p>Therefore:</p>
+
+<p>\[
+y_1^{*}
+=
+w_1y_1,
+\qquad
+x_1^{*}
+=
+w_1x_1,
+\qquad
+c_1^{*}
+=
+w_1.
+\]</p>
+
+<p>OLS applied to the transformed system produces the feasible GLS estimates.</p>
+
+<p>BinaryStat reports the coefficient of determination:</p>
+
+<p>\[
+R^2
+=
+1
+-
+\frac{
+\sum_{t=1}^{T}
+(
+y_t-\widehat y_t
+)^2
+}{
+\sum_{t=1}^{T}
+(
+y_t-\bar y
+)^2
+}.
+\]</p>
+
+<p>Since the dependent variable is binary and the error model is estimated using GLS, \(R^2\) should be interpreted primarily as a descriptive measure of linear fit rather than as a complete measure of predictive performance.</p>
+
+<p>BinaryStat automatically compares every unique pair of recorded variables over the selected time interval.</p>
+
+<p>For two variables \(A\) and \(B\), daily co-occurrences are represented by a \(2\times2\) contingency table:</p>
+
+<p>\[
+\begin{array}{c|cc}
+& B=1 & B=0 \\
+\hline
+A=1 & a & b \\
+A=0 & c & d
+\end{array}.
+\]</p>
+
+<p>The cell \(a\) represents days on which both \(A\) and \(B\) occurred, \(b\) represents days on which \(A\) occurred but \(B\) did not, \(c\) represents days on which \(B\) occurred but \(A\) did not, and \(d\) represents days on which neither event occurred.</p>
+
+<p>The strength and direction of a same-day association are quantified with the phi coefficient:</p>
+
+<p>\[
+\phi
+=
+\frac{
+ad-bc
+}{
+\sqrt{
+(a+b)
+(a+c)
+(b+d)
+(c+d)
+}
+}.
+\]</p>
+
+<p>Its theoretical range is:</p>
+
+<p>\[
+-1
+\le
+\phi
+\le
+1.
+\]</p>
+
+<p>A positive value of \(\phi\) indicates that the events tend to occur on the same days. A negative value indicates that when one event occurs, the other tends to be absent. A value close to zero indicates little or no same-day association.</p>
+
+<p>For two binary variables, \(\phi\) is equivalent to the Pearson product-moment correlation calculated on their \(0/1\) values.</p>
+
+<p>The uncorrected odds ratio is:</p>
+
+<p>\[
+OR
+=
+\frac{ad}{bc}.
+\]</p>
+
+<p>To avoid division by zero when a contingency-table cell is empty, BinaryStat applies the Haldane–Anscombe correction:</p>
+
+<p>\[
+a^{*}=a+0.5,
+\quad
+b^{*}=b+0.5,
+\quad
+c^{*}=c+0.5,
+\quad
+d^{*}=d+0.5.
+\]</p>
+
+<p>The corrected estimate is:</p>
+
+<p>\[
+\widehat{OR}
+=
+\frac{
+a^{*}d^{*}
+}{
+b^{*}c^{*}
+}.
+\]</p>
+
+<p>An odds ratio greater than one indicates higher odds of \(B\) when \(A\) occurs. An odds ratio below one indicates lower odds of \(B\) when \(A\) occurs. An odds ratio equal to one indicates no odds-based association.</p>
+
+<p>BinaryStat evaluates the null hypothesis:</p>
+
+<p>\[
+H_0:
+A
+\perp
+B,
+\]</p>
+
+<p>meaning that the two events are statistically independent.</p>
+
+<p>Conditional on the table margins, the probability of observing cell count \(a\) is:</p>
+
+<p>\[
+\Pr(A=a)
+=
+\frac{
+\binom{a+c}{a}
+\binom{b+d}{b}
+}{
+\binom{n}{a+b}
+},
+\]</p>
+
+<p>where:</p>
+
+<p>\[
+n
+=
+a+b+c+d.
+\]</p>
+
+<p>The two-sided Fisher p-value is obtained by summing the probabilities of all tables with the same margins whose probability is less than or equal to that of the observed table:</p>
+
+<p>\[
+p_{\text{Fisher}}
+=
+\sum_{
+\mathcal T:
+\Pr(\mathcal T)
+\le
+\Pr(\mathcal T_{\text{obs}})
+}
+\Pr(\mathcal T).
+\]</p>
+
+<p>Fisher’s exact test is suitable for BinaryStat because personal event data often produce small or sparse contingency-table counts for which asymptotic chi-square approximations may be unreliable.</p>
+
+<p>With \(K\) recorded variables, BinaryStat evaluates:</p>
+
+<p>\[
+m
+=
+\binom{K}{2}
+=
+\frac{K(K-1)}{2}
+\]</p>
+
+<p>pairwise hypotheses.</p>
+
+<p>Testing many variable pairs increases the probability of false positive findings. BinaryStat therefore applies the Benjamini–Hochberg procedure to control the false discovery rate.</p>
+
+<p>Let the ordered raw p-values be:</p>
+
+<p>\[
+p_{(1)}
+\le
+p_{(2)}
+\le
+\cdots
+\le
+p_{(m)}.
+\]</p>
+
+<p>The initial adjusted value for rank \(i\) is:</p>
+
+<p>\[
+\widetilde q_{(i)}
+=
+\frac{m}{i}
+p_{(i)}.
+\]</p>
+
+<p>Monotonic adjusted p-values are then calculated as:</p>
+
+<p>\[
+q_{(i)}
+=
+\min_{j\ge i}
+\left\{
+\frac{m}{j}
+p_{(j)}
+\right\},
+\]</p>
+
+<p>subject to:</p>
+
+<p>\[
+0
+\le
+q_{(i)}
+\le
+1.
+\]</p>
+
+<p>Associations with:</p>
+
+<p>\[
+q<0.05
+\]</p>
+
+<p>are treated as statistically significant after controlling for multiple comparisons.</p>
+
+<p>BinaryStat ranks pairwise results primarily by adjusted p-value:</p>
+
+<p>\[
+q_1
+\le
+q_2
+\le
+\cdots,
+\]</p>
+
+<p>and secondarily by the absolute magnitude of the phi coefficient:</p>
+
+<p>\[
+|\phi_1|
+\ge
+|\phi_2|
+\ge
+\cdots.
+\]</p>
+
+<p>When no association remains significant after adjustment, the application may display the largest exploratory values of \(|\phi|\), while explicitly identifying them as non-significant exploratory findings.</p>
+
+<p>BinaryStat identifies statistical patterns and temporal associations. It does not, by itself, establish causal relationships.</p>
+
+<p>A same-day association between variables \(A\) and \(B\) does not demonstrate that \(A\) caused \(B\), because the relationship may be affected by reverse causality, omitted variables, measurement error, selection effects, common temporal trends, or chance.</p>
+
+<p>The results should therefore be interpreted as evidence for generating and evaluating personal hypotheses, not as definitive proof of causal mechanisms.</p>
+
+<p>BinaryStat is a personal analytical tool and is not intended to provide medical diagnosis, treatment advice, or definitive causal conclusions.</p>
+ 
       
 
 
