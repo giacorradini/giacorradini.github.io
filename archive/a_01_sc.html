@@ -1,1 +1,56 @@
+<!DOCTYPE html>
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en'>
+  <head>
+    
+    <meta charset='utf-8' />
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=2.0' />
+    <meta name='author' content='Gianmarco Corradini' />
+    <meta name='description' content='Personal site about Economics, Finance, Computational Theory.' />
+    <meta name='keywords' content='personal, website, economics, articles, books, finance, informatics' />
 
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@4.0.0/tex-mml-chtml.js"></script>
+    
+    <title>Gianmarco Corradini</title>
+    
+    <link rel="stylesheet" type="text/css" href="../simple.css" />
+    
+  </head>
+
+  <body>
+
+    <h1>Gianmarco Corradini</h1>
+
+    <nav><a href='../index.html'>Home</a> | <a href='../archive.html'>Archive</a> | <a href='../journal.html'>Journal</a> </nav>
+
+    <h2>The Real Cost of Inflation under Nominally Rigid Wages</h2>
+    
+    <h3>Gianmarco Corradini, 15.05.2024</h3>
+    
+      
+    <h1>Python Source Code</h1>
+
+<p> The following Python script reproduces the savings simulation, the cumulative cost of inflation, the equivalent cost in working hours, and the decline in the real wage. </p>
+
+<pre><code class="language-python">import numpy as np import matplotlib.pyplot as plt # -------------------------------------------------- # Model parameters # -------------------------------------------------- annual_interest_rate = 0.01 annual_inflation_rates = { "2% inflation": 0.02, "5% inflation": 0.05, "10% inflation": 0.10, } consumption = 0.90 hours_per_month = 160 simulation_months = 36 # -------------------------------------------------- # Monthly rates # -------------------------------------------------- monthly_interest_rate = ( (1 + annual_interest_rate) ** (1 / 12) - 1 ) monthly_inflation_rates = { label: (1 + annual_rate) ** (1 / 12) - 1 for label, annual_rate in annual_inflation_rates.items() } # -------------------------------------------------- # Savings function # -------------------------------------------------- def savings(t, monthly_inflation): """ Calculate the household's financial position at the end of month t. A negative value represents a financing shortfall rather than positive savings. """ financial_position = 0.0 for month in range(1, t + 1): price_level = (1 + monthly_inflation) ** month nominal_consumption = consumption * price_level financial_position = ( 1 + financial_position * (1 + monthly_interest_rate) - nominal_consumption ) return financial_position # -------------------------------------------------- # Cumulative inflation cost # -------------------------------------------------- def inflation_cost(t, monthly_inflation): """ Calculate the cumulative additional expenditure required to maintain the initial level of real consumption through month t. The result is expressed in monthly-wage units. """ if t == 0: return 0.0 geometric_sum = ( (1 + monthly_inflation) * ((1 + monthly_inflation) ** t - 1) / monthly_inflation ) return consumption * (geometric_sum - t) # -------------------------------------------------- # Inflation cost in working hours # -------------------------------------------------- def inflation_cost_hours(t, monthly_inflation): """ Convert the cumulative inflation cost from monthly-wage units into working hours. """ return ( inflation_cost(t, monthly_inflation) * hours_per_month ) # -------------------------------------------------- # Real-wage change # -------------------------------------------------- def real_wage_change(t, monthly_inflation): """ Calculate the proportional change in the purchasing power of a constant nominal wage after t months. """ return ( 1 / (1 + monthly_inflation) ** t - 1 ) # -------------------------------------------------- # Savings exhaustion # -------------------------------------------------- def first_negative_month(monthly_inflation, maximum_months=600): """ Return the first month in which the household's financial position becomes negative. Return None if the position remains non-negative during the selected horizon. """ for month in range(1, maximum_months + 1): if savings(month, monthly_inflation) &lt; 0: return month return None # -------------------------------------------------- # Time horizon # -------------------------------------------------- time = np.arange( 0, simulation_months + 1 ) # -------------------------------------------------- # Plot 1: Household financial position # -------------------------------------------------- for label, monthly_rate in monthly_inflation_rates.items(): financial_positions = [ savings(month, monthly_rate) for month in time ] plt.plot( time, financial_positions, label=label ) plt.axhline( y=0, linewidth=0.8, linestyle="--" ) plt.xlabel("Month") plt.ylabel("Financial position in monthly-wage units") plt.title("Household Financial Position over Time") plt.legend() plt.tight_layout() plt.show() # -------------------------------------------------- # Plot 2: Cumulative inflation cost # -------------------------------------------------- for label, monthly_rate in monthly_inflation_rates.items(): cumulative_costs = [ inflation_cost(month, monthly_rate) for month in time ] plt.plot( time, cumulative_costs, label=label ) plt.xlabel("Month") plt.ylabel("Cumulative cost in monthly-wage units") plt.title("Cumulative Cost of Inflation") plt.legend() plt.tight_layout() plt.show() # -------------------------------------------------- # Plot 3: Inflation cost in working hours # -------------------------------------------------- for label, monthly_rate in monthly_inflation_rates.items(): cumulative_hours = [ inflation_cost_hours(month, monthly_rate) for month in time ] plt.plot( time, cumulative_hours, label=label ) plt.xlabel("Month") plt.ylabel("Equivalent working hours") plt.title("Cumulative Cost of Inflation in Working Hours") plt.legend() plt.tight_layout() plt.show() # -------------------------------------------------- # Numerical results # -------------------------------------------------- print("Monthly rates") print("-" * 50) print( f"Monthly interest rate: " f"{monthly_interest_rate:.8f}" ) for label, monthly_rate in monthly_inflation_rates.items(): print( f"{label}: {monthly_rate:.8f}" ) print() for label, monthly_rate in monthly_inflation_rates.items(): print(label) print("-" * len(label)) for month in (12, 36): financial_position = savings( month, monthly_rate ) cumulative_cost = inflation_cost( month, monthly_rate ) equivalent_hours = inflation_cost_hours( month, monthly_rate ) wage_change = real_wage_change( month, monthly_rate ) print( f"Month {month}:" ) print( f" Financial position: " f"{financial_position:.3f} " f"monthly-wage units" ) print( f" Cumulative inflation cost: " f"{cumulative_cost:.3f} " f"monthly-wage units" ) print( f" Equivalent working hours: " f"{equivalent_hours:.2f}" ) print( f" Real-wage change: " f"{wage_change:.2%}" ) exhaustion_month = first_negative_month( monthly_rate ) if exhaustion_month is None: print( " The financial position does not become " "negative within the selected horizon." ) else: print( f" First negative financial position: " f"month {exhaustion_month}" ) print() </code></pre>
+
+<h2>Expected Results</h2>
+
+<p> After 12 months, the cumulative cost of inflation expressed in equivalent working hours is approximately: </p>
+
+<ul> <li>19 hours under 2% annual inflation;</li> <li>46 hours under 5% annual inflation;</li> <li>92 hours under 10% annual inflation.</li> </ul>
+
+<p> After 36 months, the corresponding cumulative costs are approximately: </p>
+
+<ul> <li>161 hours under 2% annual inflation;</li> <li>410 hours under 5% annual inflation;</li> <li>841 hours under 10% annual inflation.</li> </ul>
+
+<p> The household's financial position first becomes negative at approximately: </p>
+
+<ul> <li>month 127 under 2% annual inflation;</li> <li>month 51 under 5% annual inflation;</li> <li>month 26 under 10% annual inflation.</li> </ul>
+
+<p> A negative financial position represents the financing shortfall that would arise if the household continued maintaining the same level of real consumption after exhausting its savings. </p>
+
+
+    <footer>All contents of this site are under this <a href='https://creativecommons.org/licenses/by/4.0'>license</a>.</footer>
+
+  </body>
+</html>
