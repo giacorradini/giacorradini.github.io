@@ -202,18 +202,20 @@ p.cookies_policy span { color: blue; cursor: pointer; }
 
 .about-me img {
     display: block;
-    margin: 0;           /* Override the global img rule */
+    margin: 0;
     width: 250px;
     max-width: 250px;
+    height: auto;
     flex-shrink: 0;
 }
 
 .about-text {
     flex: 1;
+    min-width: 0;
 }
 
 .about-text p {
-    margin-top: 0;
+    margin: 0;
 }
 
 @media (max-width: 700px) {
@@ -225,5 +227,4 @@ p.cookies_policy span { color: blue; cursor: pointer; }
         margin: 0 auto;
     }
 }
-
 
