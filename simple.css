@@ -192,4 +192,38 @@ p.cookies_policy span { color: blue; cursor: pointer; }
     flex:1;
 }
 
+/* ---------------- About Me ---------------- */
+
+.about-me {
+    display: flex;
+    align-items: flex-start;
+    gap: 2rem;
+}
+
+.about-me img {
+    display: block;
+    margin: 0;           /* Override the global img rule */
+    width: 250px;
+    max-width: 250px;
+    flex-shrink: 0;
+}
+
+.about-text {
+    flex: 1;
+}
+
+.about-text p {
+    margin-top: 0;
+}
+
+@media (max-width: 700px) {
+    .about-me {
+        flex-direction: column;
+    }
+
+    .about-me img {
+        margin: 0 auto;
+    }
+}
+
 
