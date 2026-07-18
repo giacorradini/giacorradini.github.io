@@ -173,3 +173,21 @@ p.cookies_policy span { color: blue; cursor: pointer; }
   border-radius: 4px;
   font-family: 'Menlo', 'Fira Mono', monospace;
 }
+
+/* ---------------- Books ---------------- */
+.book{
+    display:flex;
+    gap:20px;
+    margin:25px 0;
+    align-items:flex-start;
+}
+
+.book img{
+    width:120px;
+    height:auto;
+    border:1px solid #ccc;
+}
+
+.book-info{
+    flex:1;
+}
