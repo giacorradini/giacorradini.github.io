@@ -191,3 +191,32 @@ p.cookies_policy span { color: blue; cursor: pointer; }
 .book-info{
     flex:1;
 }
+
+
+/* ---------------- About me ---------------- */
+.about-me {
+    display: flex;
+    align-items: flex-start; /* Aligns the top of the text with the top of the image */
+    gap: 2rem;               /* Space between image and text */
+    margin-bottom: 2rem;
+}
+
+.about-text {
+    flex: 1;
+}
+
+.about-text p {
+    margin-top: 0;
+}
+
+/* Mobile layout */
+@media (max-width: 700px) {
+    .about-me {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .about-text {
+        text-align: justify;
+    }
+}
