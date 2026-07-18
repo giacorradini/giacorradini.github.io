@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+```
+<title>Salary Depreciation Calculator</title>
+
+<link rel="stylesheet" href="../simple.css">
+
+<style>
+    .calculator-box {
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        padding: 1em;
+        margin-top: 2em;
+    }
+
+    .calculator-box label {
+        display: block;
+        margin-top: 0.75em;
+        font-weight: bold;
+    }
+
+    .calculator-box input {
+        width: 200px;
+        max-width: 100%;
+        padding: 0.4em;
+        margin-top: 0.3em;
+    }
+
+    .calculator-box button {
+        margin-top: 1em;
+        padding: 0.6em 1.2em;
+        font-size: 1em;
+        cursor: pointer;
+    }
+
+    .calculator-box pre {
+        background-color: #f4f4f4;
+        padding: 0.8em;
+        margin-top: 1em;
+        white-space: pre-wrap;
+        border-radius: 4px;
+    }
+</style>
+```
+
+</head>
+
+<body>
+
+<article>
+
+```
+<h2>Salary Depreciation Calculator</h2>
+
+<p>
+    This calculator estimates how inflation reduces the purchasing
+    power of a constant nominal salary and of the portion of that
+    salary saved each year.
+</p>
+
+<form class="calculator-box" id="calculator-form">
+
+    <label for="salary">
+        Nominal salary:
+    </label>
+
+    <input
+        type="number"
+        id="salary"
+        placeholder="Enter salary"
+        min="0"
+        step="0.01"
+        required
+    >
+
+    <label for="saved">
+        Percentage of salary saved:
+    </label>
+
+    <input
+        type="number"
+        id="saved"
+        placeholder="Enter percentage"
+        min="0"
+        max="100"
+        step="0.01"
+        required
+    >
+
+    <label for="inflation">
+        Annual inflation rate:
+    </label>
+
+    <input
+        type="number"
+        id="inflation"
+        value="2"
+        min="0"
+        step="0.01"
+        required
+    >
+
+    <label for="years">
+        Number of years:
+    </label>
+
+    <input
+        type="number"
+        id="years"
+        value="10"
+        min="1"
+        max="100"
+        step="1"
+        required
+    >
+
+    <button type="submit">
+        Calculate
+    </button>
+
+    <pre id="output" aria-live="polite">Results will appear here.</pre>
+
+</form>
+```
+
+</article>
+
+<script>
+const calculatorForm = document.getElementById("calculator-form");
+
+calculatorForm.addEventListener("submit", function (event) {
+    event.preventDefault();
+    calculate();
+});
+
+
+function calculate() {
+    const salary = Number(
+        document.getElementById("salary").value
+    );
+
+    const savedPercent = Number(
+        document.getElementById("saved").value
+    );
+
+    const inflationPercent = Number(
+        document.getElementById("inflation").value
+    );
+
+    const years = Number(
+        document.getElementById("years").value
+    );
+
+    const output = document.getElementById("output");
+
+
+    if (
+        !Number.isFinite(salary)
+        || !Number.isFinite(savedPercent)
+        || !Number.isFinite(inflationPercent)
+        || !Number.isInteger(years)
+    ) {
+        output.textContent = "Please enter valid numbers.";
+        return;
+    }
+
+
+    if (salary < 0) {
+        output.textContent = "Salary cannot be negative.";
+        return;
+    }
+
+
+    if (savedPercent < 0 || savedPercent > 100) {
+        output.textContent =
+            "The saved percentage must be between 0 and 100.";
+        return;
+    }
+
+
+    if (inflationPercent < 0) {
+        output.textContent =
+            "The inflation rate cannot be negative.";
+        return;
+    }
+
+
+    if (years < 1 || years > 100) {
+        output.textContent =
+            "The number of years must be between 1 and 100.";
+        return;
+    }
+
+
+    const inflationRate = inflationPercent / 100;
+    const nominalSavedAmount = salary * savedPercent / 100;
+
+    let result = "";
+
+    result += `Nominal salary: ${salary.toFixed(2)}\n`;
+    result += `Nominal amount saved: ${nominalSavedAmount.toFixed(2)}\n`;
+    result += `Percentage saved: ${savedPercent.toFixed(2)}%\n`;
+    result += `Annual inflation rate: ${inflationPercent.toFixed(2)}%\n`;
+    result += `Calculation period: ${years} years\n\n`;
+
+
+    for (let year = 1; year <= years; year++) {
+        const priceIndex = Math.pow(
+            1 + inflationRate,
+            year
+        );
+
+        const realSalary = salary / priceIndex;
+
+        const depreciationPercent = (
+            1 - realSalary / salary
+        ) * 100;
+
+        const realValueOfMonthlySavings =
+            nominalSavedAmount / priceIndex;
+
+
+        result += `Year ${year}\n`;
+        result += `Salary purchasing power: ${realSalary.toFixed(2)}\n`;
+        result += `Cumulative depreciation: ${depreciationPercent.toFixed(2)}%\n`;
+        result += `Real value of amount saved: ${realValueOfMonthlySavings.toFixed(2)}\n\n`;
+    }
+
+
+    output.textContent = result.trim();
+}
+</script>
+
+</body>
+</html>
