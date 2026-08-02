@@ -22,12 +22,351 @@
 
     <nav><a href='../index.html'>Home</a> | <a href='../archive.html'>Archive</a> | <a href='../journal.html'>Journal</a> </nav>
 
-    <h2>********TITLE*********</h2>
+    <h2>Measuring Accounting Bias</h2>
+    <p><strong>A General Framework for the Divergence Between Book Value and Economic Value</strong></p>
     
-    <h3>Gianmarco Corradini, ****DATE****</h3>
+    <h3>Gianmarco Corradini, 02.08.2026</h3>
     
           
-    <p>*****TEXT*******</p>
+    <section> <h2>Abstract</h2>
+
+<p> Financial statements do not reproduce economic reality directly. They transform economic events through recognition, measurement, timing, estimation, and disclosure rules designed to promote reliability, comparability, and verifiability. This article proposes a general framework for measuring the resulting divergence between accounting values and economic values. The difference is defined as <em>Accounting Bias</em>. The framework introduces an accounting measurement operator, decomposes Accounting Bias into its principal components, and extends the analysis from individual balance-sheet items to the financial statements as a whole. The resulting Accounting Bias Index provides a normalized measure that may be used to compare firms, industries, accounting methods, and reporting systems. This article presents the core framework in abbreviated form. A more extensive book will develop the theory and its applications to individual assets, liabilities, income-statement items, and accounting standards. </p> </section>
+
+<section> <h2>1. Introduction</h2>
+
+<p> Accounting is commonly understood as a system for recording and reporting economic transactions. This description is correct but incomplete. Accounting does not merely record events; it transforms complex economic phenomena into standardized monetary quantities. </p>
+
+<p> A firm's economic reality includes physical resources, contractual rights, liabilities, productive knowledge, expected cash flows, risks, managerial capabilities, customer relationships, and future opportunities. Only part of this reality appears in the financial statements. Even when an economic resource is recognized, the amount reported may depend on historical cost, amortized cost, fair value, impairment, depreciation, or another measurement convention. </p>
+
+<p> Book value should therefore not be interpreted as economic value itself. It is the output of a measurement system operating under institutional and informational constraints. </p>
+
+<p> This observation leads to two questions: </p>
+
+<ol> <li>How far does book value diverge from economic value?</li> <li>Can the divergence be measured systematically?</li> </ol>
+
+<p> The framework proposed in this article answers the second question affirmatively. </p> </section>
+
+<section> <h2>2. Book Value and Economic Value</h2>
+
+<p> Let \(x\) denote an economic object, such as an asset, liability, revenue, expense, or contractual right. </p>
+
+<p> Its economic value is denoted by </p>
+
+<p> \[ V_E(x). \] </p>
+
+<p> Its accounting or book value is denoted by </p>
+
+<p> \[ V_B(x). \] </p>
+
+<p> Economic value depends on the future benefits, costs, risks, and opportunities associated with the object. Book value depends on the accounting rules governing its recognition and measurement. </p>
+
+<p> In general, </p>
+
+<p> \[ V_B(x) \neq V_E(x). \] </p>
+
+<p> The difference between these two quantities is defined as Accounting Bias. </p>
+
+<p> \[ \boxed{ B(x)=V_B(x)-V_E(x) } \] </p>
+
+<p> This sign convention has a direct interpretation: </p>
+
+<ul> <li>\(B(x)>0\): accounting overstates economic value;</li> <li>\(B(x)<0\): accounting understates economic value;</li> <li>\(B(x)=0\): book value coincides with economic value.</li> </ul>
+
+<p> Accounting Bias is not necessarily an accounting error. It may be the predictable result of correctly applying accounting standards whose objectives differ from those of economic valuation. </p> </section>
+
+<section> <h2>3. The Accounting Measurement Operator</h2>
+
+<p> The distinction between book value and economic value can be generalized by representing accounting as a mathematical operator. </p>
+
+<p> Let \(E\) denote the underlying economic state. Define the accounting measurement operator </p>
+
+<p> \[ \mathcal{A}:E\rightarrow \mathbb{R}^{n}. \] </p>
+
+<p> The operator \(\mathcal{A}\) maps economic reality into the accounting quantities reported in the financial statements. </p>
+
+<p> For an individual economic object, </p>
+
+<p> \[ V_B=\mathcal{A}(V_E). \] </p>
+
+<p> Accounting Bias may therefore be written as </p>
+
+<p> \[ \boxed{ B=\mathcal{A}(V_E)-V_E } \] </p>
+
+<p> This formulation emphasizes that accounting is not a passive description of value. It is a transformation of economic information. </p>
+
+<p> The general accounting operator may itself be represented as a composition of more specific operators: </p>
+
+<p> \[ \mathcal{A} = \mathcal{M} \circ \mathcal{P} \circ \mathcal{T} \circ \mathcal{R}, \] </p>
+
+<p> where: </p>
+
+<ul> <li>\(\mathcal{R}\) is the recognition operator;</li> <li>\(\mathcal{T}\) is the timing operator;</li> <li>\(\mathcal{P}\) is the prudence operator;</li> <li>\(\mathcal{M}\) is the measurement operator.</li> </ul>
+
+<p> Different accounting systems may be represented by different compositions or specifications of these operators. IFRS, national accounting systems, and other reporting frameworks may therefore generate different book values even when applied to the same underlying economic state. </p> </section>
+
+<section> <h2>4. Fundamental Sources of Accounting Bias</h2>
+
+<p> Although accounting standards contain numerous detailed rules, the divergence between book value and economic value can be traced to a limited number of fundamental mechanisms. </p>
+
+<h3>4.1 Recognition Bias</h3>
+
+<p> Recognition Bias arises when an economically valuable object is excluded from the financial statements. </p>
+
+<p> If </p>
+
+<p> \[ V_E(x)>0 \] </p>
+
+<p> but accounting does not recognize the object, then </p>
+
+<p> \[ V_B(x)=0. \] </p>
+
+<p> Consequently, </p>
+
+<p> \[ B_R(x)=-V_E(x). \] </p>
+
+<p> This situation is common for internally generated brands, human capital, organizational knowledge, customer relationships, and internally generated goodwill. </p>
+
+<p> Non-recognition produces the maximum relative bias for a positive economic asset because its complete economic value is omitted. </p>
+
+<h3>4.2 Measurement Bias</h3>
+
+<p> Measurement Bias arises when an economic object is recognized but assigned an accounting value that differs from its economic value. </p>
+
+<p> \[ B_M(x)=V_B(x)-V_E(x). \] </p>
+
+<p> Historical cost is a simple example. If an asset is acquired for \(P_0\), accounting may continue to report </p>
+
+<p> \[ V_B(t)=P_0, \] </p>
+
+<p> while its economic value evolves as \(V_E(t)\). The resulting bias is </p>
+
+<p> \[ B_H(t)=P_0-V_E(t). \] </p>
+
+<p> Historical cost may understate appreciating assets and overstate assets whose economic value has declined. </p>
+
+<h3>4.3 Timing Bias</h3>
+
+<p> Timing Bias arises when economic value is created or destroyed before accounting recognizes the corresponding event. </p>
+
+<p> Let \(T_E\) denote the time at which economic value arises and \(T_R\) the time of accounting recognition. The recognition delay is </p>
+
+<p> \[ \tau=T_R-T_E. \] </p>
+
+<p> Timing Bias generally increases with \(\tau\). It is especially relevant to revenue recognition, deferred income, long-term contracts, accruals, and matching. </p>
+
+<h3>4.4 Estimation Bias</h3>
+
+<p> Many accounting quantities depend on estimates rather than directly observable amounts. </p>
+
+<p> Let \(x\) denote the true economic parameter and \(\hat{x}\) its accounting estimate. If value depends on the function \(f(\cdot)\), Estimation Bias is </p>
+
+<p> \[ B_E=f(\hat{x})-f(x). \] </p>
+
+<p> This source of bias affects provisions, pension obligations, expected credit losses, impairments, useful lives, residual values, and deferred taxes. </p>
+
+<h3>4.5 Market Bias</h3>
+
+<p> Fair value accounting often uses observable market prices. Market prices, however, may differ from intrinsic economic value. </p>
+
+<p> Let \(P_M\) denote market price. Market Bias is </p>
+
+<p> \[ B_{MK}=P_M-V_E. \] </p>
+
+<p> If markets are liquid and informationally efficient, this component may be small. If markets are illiquid, distressed, speculative, or model-dependent, it may become substantial. </p> </section>
+
+<section> <h2>5. Decomposition of Accounting Bias</h2>
+
+<p> An accounting item may be affected by several sources of bias simultaneously. A productive asset, for example, may be affected by historical cost, depreciation assumptions, technological obsolescence, and market-price changes. </p>
+
+<p> Total bias for an individual item may therefore be represented as </p>
+
+<p> \[ B_i = B_{R,i} + B_{M,i} + B_{T,i} + B_{E,i} + B_{MK,i}. \] </p>
+
+<p> More generally, </p>
+
+<p> \[ \boxed{ B = B_R + B_M + B_T + B_E + B_{MK} } \] </p>
+
+<p> This decomposition does not imply that the components are always statistically independent. Interactions may exist. For example, a delayed impairment test may combine Timing Bias and Estimation Bias. The decomposition should therefore be understood primarily as an analytical classification of the mechanisms generating the total divergence. </p> </section>
+
+<section> <h2>6. Examples</h2>
+
+<h3>6.1 Cash</h3>
+
+<p> For unrestricted cash denominated in the reporting currency, </p>
+
+<p> \[ V_B=V_E=C. \] </p>
+
+<p> Therefore, </p>
+
+<p> \[ B_C=0. \] </p>
+
+<p> Cash provides the limiting case of nearly unbiased accounting measurement. </p>
+
+<h3>6.2 Trade Receivables</h3>
+
+<p> Suppose a receivable has nominal value \(R\) and collection probability \(p\). Its economic value is </p>
+
+<p> \[ V_E=pR. \] </p>
+
+<p> If accounting reports the receivable net of a loss allowance \(L\), </p>
+
+<p> \[ V_B=R-L. \] </p>
+
+<p> Accounting Bias is </p>
+
+<p> \[ B_{AR}=(R-L)-pR. \] </p>
+
+<p> If </p>
+
+<p> \[ L=(1-p)R, \] </p>
+
+<p> then </p>
+
+<p> \[ B_{AR}=0. \] </p>
+
+<p> Receivable bias therefore depends mainly on the accuracy of expected-loss estimates. </p>
+
+<h3>6.3 Internally Generated Intangible Assets</h3>
+
+<p> Suppose an internally generated brand has economic value \(G>0\), but accounting does not recognize it. </p>
+
+<p> \[ V_B=0, \qquad V_E=G. \] </p>
+
+<p> Therefore, </p>
+
+<p> \[ B_G=-G. \] </p>
+
+<p> The accounting system understates the asset by its entire economic value. </p>
+
+<h3>6.4 A Provision</h3>
+
+<p> Suppose a possible future obligation has nominal amount \(L_n\) and true occurrence probability \(p\). </p>
+
+<p> Its economic value is </p>
+
+<p> \[ V_E=pL_n. \] </p>
+
+<p> If accounting recognizes the full nominal amount only when the estimated probability exceeds the threshold \(p^*\), then </p>
+
+<p> \[ V_B= \begin{cases} L_n, & \hat{p}\geq p^*,\\ 0, & \hat{p}<p^*. \end{cases} \] </p>
+
+<p> Accounting Bias becomes </p>
+
+<p> \[ B_P= \begin{cases} (1-p)L_n, & \hat{p}\geq p^*,\\ -pL_n, & \hat{p}<p^*. \end{cases} \] </p>
+
+<p> The discontinuity is caused by the accounting recognition threshold rather than by the underlying economic obligation. </p> </section>
+
+<section> <h2>7. Total Accounting Bias</h2>
+
+<p> The framework may be extended from an individual item to the balance sheet as a whole. </p>
+
+<p> Suppose a firm reports \(n\) assets and \(m\) liabilities. The total asset bias is </p>
+
+<p> \[ TAB_A = \sum_{i=1}^{n} \left( V_{B,A_i}-V_{E,A_i} \right). \] </p>
+
+<p> The total liability bias is </p>
+
+<p> \[ TAB_L = \sum_{j=1}^{m} \left( V_{B,L_j}-V_{E,L_j} \right). \] </p>
+
+<p> Since equity equals assets minus liabilities, Total Accounting Bias is </p>
+
+<p> \[ \boxed{ TAB = TAB_A-TAB_L } \] </p>
+
+<p> or </p>
+
+<p> \[ TAB = \sum_{i=1}^{n} B_{A_i} - \sum_{j=1}^{m} B_{L_j}. \] </p>
+
+<p> This quantity is exactly equal to the difference between book equity and economic equity: </p>
+
+<p> \[ TAB = E_B-E_E. \] </p>
+
+<p> Equity therefore does not create an independent source of Accounting Bias. It aggregates the biases contained in recognized assets and liabilities. </p> </section>
+
+<section> <h2>8. The Accounting Bias Index</h2>
+
+<p> Total Accounting Bias is affected by firm size. A normalized measure is therefore required for comparisons. </p>
+
+<p> Define the Accounting Bias Index as </p>
+
+<p> \[ \boxed{ ABI = \frac{|TAB|} {|E_E|} } \] </p>
+
+<p> whenever economic equity is non-zero. </p>
+
+<p> The index has the following interpretation: </p>
+
+<ul> <li>\(ABI=0\): book equity and economic equity coincide;</li> <li>a low \(ABI\): accounting provides a close approximation of economic equity;</li> <li>a high \(ABI\): the financial statements substantially diverge from economic value.</li> </ul>
+
+<p> The measure may be applied to different firms, industries, periods, or accounting systems, provided that economic value is estimated consistently. </p>
+
+<p> A second measure may be used to prevent offsetting positive and negative item-level biases: </p>
+
+<p> \[ ABI_G = \frac{ \sum_i |B_{A_i}|+\sum_j |B_{L_j}| }{ \sum_i |V_{E,A_i}|+\sum_j |V_{E,L_j}| }. \] </p>
+
+<p> The first index measures net bias in economic equity. The second measures gross measurement divergence across the entire balance sheet. </p> </section>
+
+<section> <h2>9. Accounting Bias Profiles</h2>
+
+<p> Two firms may have the same total Accounting Bias while obtaining it from different balance-sheet items. </p>
+
+<p> Define the Accounting Bias Profile as </p>
+
+<p> \[ \mathbf{B} = \left( B_1, B_2, \ldots, B_N \right). \] </p>
+
+<p> A manufacturing firm may derive most of its bias from property, plant, and equipment. A technology firm may derive most of it from unrecognized intangible assets. A financial institution may derive a significant part from credit-risk estimates and Level 3 valuation models. </p>
+
+<p> The relative contribution of item \(i\) may be measured by </p>
+
+<p> \[ \omega_i = \frac{|B_i|} {\sum_{k=1}^{N}|B_k|}. \] </p>
+
+<p> The coefficients satisfy </p>
+
+<p> \[ \sum_{i=1}^{N}\omega_i=1. \] </p>
+
+<p> The Accounting Bias Profile is therefore useful not only for measuring total divergence, but also for diagnosing its principal sources. </p> </section>
+
+<section> <h2>10. Implications for Accounting Standards</h2>
+
+<p> The framework changes the conventional question used to compare accounting methods. </p>
+
+<p> The relevant question is not simply whether historical cost, fair value, prudence, or realization is superior. It is: </p>
+
+<blockquote> <p> Which accounting rule minimizes the relevant components of Accounting Bias under the prevailing economic and informational conditions? </p> </blockquote>
+
+<p> Historical cost may reduce exposure to temporary market noise while increasing the divergence from current value. Fair value may reduce Historical Cost Bias while introducing Market Bias. Prudence may reduce the probability of asset overstatement while intentionally creating conservative equity values. Recognition thresholds may improve verifiability while excluding economically relevant resources and obligations. </p>
+
+<p> Accounting standards therefore do not eliminate bias. They choose how different forms of bias are distributed. </p> </section>
+
+<section> <h2>11. Limitations</h2>
+
+<p> The framework depends on estimates of economic value, which is not always directly observable. Market prices may be noisy, discounted cash-flow models depend on assumptions, and some intangible resources cannot be valued with precision. </p>
+
+<p> The proposed measures should therefore not be interpreted as mechanically observable facts. They are analytical tools for comparing book values with consistently estimated economic benchmarks. </p>
+
+<p> A further difficulty is that different forms of bias may interact, and positive and negative biases may offset each other at the aggregate level. For this reason, both net and gross measures should be considered. </p>
+
+<p> These limitations do not invalidate the framework. They clarify that the measurement of Accounting Bias is itself an estimation problem and must be accompanied by sensitivity analysis, explicit assumptions, and uncertainty ranges. </p> </section>
+
+<section> <h2>12. Conclusion</h2>
+
+<p> Accounting is a structured measurement system rather than a direct reproduction of economic reality. It transforms economic phenomena through recognition, timing, prudence, valuation, and estimation rules. </p>
+
+<p> The resulting divergence between book value and economic value can be defined as </p>
+
+<p> \[ B=V_B-V_E, \] </p>
+
+<p> or, more generally, </p>
+
+<p> \[ B=\mathcal{A}(V_E)-V_E. \] </p>
+
+<p> Accounting Bias may be decomposed into Recognition Bias, Measurement Bias, Timing Bias, Estimation Bias, and Market Bias. These components can be measured for individual accounting items and aggregated into Total Accounting Bias and the Accounting Bias Index. </p>
+
+<p> The framework offers a common language for analyzing balance-sheet items, comparing accounting methods, assessing reporting systems, and identifying the principal sources of divergence between book equity and economic equity. </p>
+
+<p> This article has presented the theory in abbreviated form. A forthcoming book will extend the framework to individual assets, liabilities, income-statement items, alternative accounting systems, empirical applications, and Accounting Bias under uncertainty. </p>
+
+<p> The central conclusion is simple: </p>
+
+<blockquote> <p> Accounting standards do not eliminate bias. They redistribute it. </p> </blockquote> </section>
 
 
     <footer>All contents of this site are under this <a href='https://creativecommons.org/licenses/by/4.0'>license</a>.</footer>
