@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en'>
+  <head>
+    
+    <meta charset='utf-8' />
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=2.0' />
+    <meta name='author' content='Gianmarco Corradini' />
+    <meta name='description' content='Personal site about Economics, Finance, Computational Theory.' />
+    <meta name='keywords' content='personal, website, economics, articles, books, finance, informatics' />
+
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@4.0.0/tex-mml-chtml.js"></script>
+    
+    <title>Gianmarco Corradini</title>
+    
+    <link rel="stylesheet" type="text/css" href="../simple.css" />
+    
+  </head>
+
+  <body>
+
+    <h1>Gianmarco Corradini</h1>
+
+    <nav><a href='../index.html'>Home</a> | <a href='../archive.html'>Archive</a> | <a href='../journal.html'>Journal</a> </nav>
+
+    <h2>Building a Reproducible Framework for Accounting Bias Research</h2>
+    
+    <h3>Gianmarco Corradini, 03.08.2026</h3>
+    
+          
+    <h2>Introduction</h2>
+
+    <p>
+      The Accounting Bias Framework studies how recognition rules, measurement
+      conventions, timing differences and accounting estimates can create
+      systematic differences between reported accounting values and underlying
+      economic values.
+    </p>
+
+    <p>
+      The empirical objective is not to observe economic value directly. In most
+      cases, that is impossible. Instead, the methodology identifies observable
+      financial-statement variables that represent accounting mechanisms likely
+      to produce such differences.
+    </p>
+
+    <p>
+      The complete analysis is designed as a reproducible Python project using
+      publicly available SEC financial-statement data.
+    </p>
+  </section>
+
+  <section>
+    <h2>Data Source</h2>
+
+    <p>
+      The project uses the SEC Company Facts database, which provides structured
+      financial-statement information reported through XBRL.
+    </p>
+
+    <p>
+      Each observation includes information such as:
+    </p>
+
+    <ul>
+      <li>the company identifier;</li>
+      <li>the accounting concept;</li>
+      <li>the reported value;</li>
+      <li>the reporting period;</li>
+      <li>the filing form;</li>
+      <li>the filing date;</li>
+      <li>the accession number.</li>
+    </ul>
+
+    <p>
+      The use of standardized XBRL concepts makes it possible to extract
+      accounting variables automatically rather than collecting them manually
+      from annual reports.
+    </p>
+  </section>
+
+  <section>
+    <h2>The Processing Pipeline</h2>
+
+    <p>
+      The empirical workflow is divided into separate stages:
+    </p>
+
+    <ol>
+      <li>download SEC Company Facts files;</li>
+      <li>extract relevant accounting concepts;</li>
+      <li>resolve alternative XBRL tags;</li>
+      <li>construct one observation for each firm and fiscal year;</li>
+      <li>calculate accounting ratios;</li>
+      <li>standardize the variables;</li>
+      <li>perform statistical diagnostics;</li>
+      <li>export tables and figures.</li>
+    </ol>
+
+    <p>
+      Each stage produces intermediate files. This allows the researcher to
+      inspect the data before continuing to the next step.
+    </p>
+  </section>
+
+  <section>
+    <h2>Extracting Accounting Variables</h2>
+
+    <p>
+      The software maps theoretical concepts to standardized XBRL tags. Examples
+      include total assets, goodwill, research and development expenditure,
+      property, plant and equipment, accumulated depreciation, receivables and
+      deferred taxes.
+    </p>
+
+    <p>
+      Companies do not always use the same taxonomy element for economically
+      similar items. The extraction process therefore uses an ordered hierarchy:
+    </p>
+
+    <ol>
+      <li>search for the preferred tag;</li>
+      <li>search predefined fallback tags;</li>
+      <li>record the exact tag used;</li>
+      <li>leave the value missing when no suitable fact exists.</li>
+    </ol>
+
+    <p>
+      Missing values are not automatically replaced with zero because the
+      absence of a structured fact does not necessarily mean that the economic
+      item is absent.
+    </p>
+  </section>
+
+  <section>
+    <h2>Constructing Accounting Bias Proxies</h2>
+
+    <p>
+      Raw accounting values are converted into ratios so that firms of different
+      sizes can be compared.
+    </p>
+
+    <p>
+      For example, research and development intensity can be represented as:
+    </p>
+
+    <p>
+      <strong>R&amp;D Intensity = R&amp;D Expense / Total Assets</strong>
+    </p>
+
+    <p>
+      The relative age of property, plant and equipment can be approximated as:
+    </p>
+
+    <p>
+      <strong>
+        PPE Age = Accumulated Depreciation / Gross Property, Plant and Equipment
+      </strong>
+    </p>
+
+    <p>
+      Deferred-tax intensity can be represented as:
+    </p>
+
+    <p>
+      <strong>
+        Deferred-Tax Intensity = (Deferred Tax Assets + Deferred Tax
+        Liabilities) / Total Assets
+      </strong>
+    </p>
+
+    <p>
+      These variables are not direct measurements of Accounting Bias. They are
+      empirical proxies for accounting mechanisms associated with recognition,
+      measurement, timing or estimation differences.
+    </p>
+
+  </section>
+
+  <section>
+    <h2>Data Cleaning</h2>
+
+    <p>
+      Before analysis, the pipeline applies several automated controls:
+    </p>
+
+    <ul>
+      <li>annual filings are separated from quarterly filings;</li>
+      <li>amended filings replace earlier versions;</li>
+      <li>duplicate firm-year observations are removed;</li>
+      <li>units and reporting periods are checked;</li>
+      <li>missing values are documented;</li>
+      <li>the original XBRL tag and filing accession number are preserved.</li>
+    </ul>
+
+    <p>
+      These controls make every transformed value traceable to its original SEC
+      filing.
+    </p>
+  </section>
+
+  <section>
+    <h2>Winsorization and Standardization</h2>
+
+    <p>
+      Financial-statement ratios often contain extreme observations. To reduce
+      their influence, variables can be winsorized within each fiscal year.
+    </p>
+
+    <p>
+      The cleaned variables are then converted into z-scores:
+    </p>
+
+    <p>
+      <strong>z = (x − mean) / standard deviation</strong>
+    </p>
+
+    <p>
+      Standardization places variables with different units and scales on a
+      comparable basis.
+    </p>
+
+    <p>
+      When a variable has an inverse theoretical interpretation, its standardized
+      value can be multiplied by minus one so that all variables follow a common
+      direction.
+    </p>
+  </section>
+
+  <section>
+    <h2>Statistical Analysis</h2>
+
+    <p>
+      The first statistical objective is to examine the structure of the
+      proposed variables rather than immediately estimate a predictive model.
+    </p>
+
+    <p>
+      The diagnostic workflow includes:
+    </p>
+
+    <ul>
+      <li>descriptive statistics;</li>
+      <li>histograms and boxplots;</li>
+      <li>Pearson correlations;</li>
+      <li>Spearman correlations;</li>
+      <li>Cronbach's alpha;</li>
+      <li>the Kaiser-Meyer-Olkin statistic;</li>
+      <li>Principal Component Analysis;</li>
+      <li>cluster analysis.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Internal Consistency</h2>
+
+    <p>
+      Cronbach's alpha evaluates whether several variables behave like
+      interchangeable indicators of one underlying construct.
+    </p>
+
+    <p>
+      This test must be interpreted cautiously. Recognition, measurement and
+      estimation mechanisms may contribute to a broader Accounting Bias
+      Framework without being strongly correlated.
+    </p>
+
+    <p>
+      A low alpha may therefore indicate that the framework is multidimensional
+      rather than statistically invalid.
+    </p>
+  </section>
+
+  <section>
+    <h2>Principal Component Analysis</h2>
+
+    <p>
+      Principal Component Analysis identifies combinations of variables that
+      explain the largest proportion of variation in the dataset.
+    </p>
+
+    <p>
+      If one component dominates, a single composite index may be defensible. If
+      several components remain important, separate dimensions such as
+      Recognition Bias, Measurement Bias and Timing Bias may be more
+      appropriate.
+    </p>
+
+    <p>
+      PCA is therefore used as an exploratory tool rather than as automatic proof
+      of a particular theoretical structure.
+    </p>
+  </section>
+
+  <section>
+    <h2>Composite Measures</h2>
+
+    <p>
+      A simple exploratory index can be calculated as the mean of standardized
+      components:
+    </p>
+
+    <p>
+      <strong>ABI = (z<sub>1</sub> + z<sub>2</sub> + ... + z<sub>k</sub>) / k</strong>
+    </p>
+
+    <p>
+      The number of available components is recorded for each firm-year. An
+      observation is retained only when a minimum number of components is
+      available.
+    </p>
+
+    <p>
+      Equal weighting provides a transparent baseline. Alternative versions may
+      use theoretical weights, principal-component weights or separate
+      sub-indices.
+    </p>
+  </section>
+
+  <section>
+    <h2>Software Structure</h2>
+
+    <p>
+      The research code is organized into independent modules for:
+    </p>
+
+    <ul>
+      <li>data acquisition;</li>
+      <li>XBRL extraction;</li>
+      <li>variable construction;</li>
+      <li>statistical diagnostics;</li>
+      <li>figure generation;</li>
+      <li>LaTeX table generation;</li>
+      <li>logging.</li>
+    </ul>
+
+    <pre><code>accounting_bias/
+├── config/
+├── data/
+│   ├── raw/
+│   └── processed/
+├── outputs/
+│   ├── tables/
+│   ├── figures/
+│   └── logs/
+├── scripts/
+├── src/
+└── tests/</code></pre>
+
+    <p>
+      The modular structure allows individual variables, statistical methods or
+      data sources to be changed without rewriting the entire project.
+    </p>
+  </section>
+
+  <section>
+    <h2>Automatic Output Generation</h2>
+
+    <p>
+      The pipeline automatically generates:
+    </p>
+
+    <ul>
+      <li>processed datasets;</li>
+      <li>coverage reports;</li>
+      <li>CSV tables;</li>
+      <li>LaTeX tables;</li>
+      <li>PDF figures;</li>
+      <li>diagnostic logs.</li>
+    </ul>
+
+    <p>
+      The manuscript can import the generated LaTeX tables and PDF figures
+      directly. Updating the analysis therefore requires rerunning the code
+      rather than manually editing results.
+    </p>
+  </section>
+
+  <section>
+    <h2>Conclusion</h2>
+
+    <p>
+      The empirical methodology is designed to translate a theoretical
+      accounting framework into a transparent and testable research process.
+    </p>
+
+    <p>
+      Its main principles are simple: use public data, preserve the original
+      source of every value, document missing information, separate data
+      processing from statistical analysis, and generate all research outputs
+      automatically.
+    </p>
+
+    <p>
+      The purpose is not to produce one immutable Accounting Bias formula. It is
+      to create a reproducible framework that can be tested, criticized and
+      extended as new variables and datasets become available.
+    </p>
+  </section>
+
+
+    <footer>All contents of this site are under this <a href='https://creativecommons.org/licenses/by/4.0'>license</a>.</footer>
+
+  </body>
+</html>
