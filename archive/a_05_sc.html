@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en'>
+  <head>
+
+    <meta charset='utf-8' />
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=2.0' />
+    <meta name='author' content='Gianmarco Corradini' />
+    <meta name='description' content='Python source code for searching SAP journal-entry exports with regular expressions.' />
+    <meta name='keywords' content='SAP, Python, regex, regular expressions, accounting, journal entries, finance' />
+
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@4.0.0/tex-mml-chtml.js"></script>
+
+    <title>Gianmarco Corradini</title>
+
+    <link rel="stylesheet" type="text/css" href="../simple.css" />
+
+  </head>
+
+  <body>
+
+    <h1>Gianmarco Corradini</h1>
+
+    <nav><a href='../index.html'>Home</a> | <a href='../archive.html'>Archive</a> | <a href='../journal.html'>Journal</a></nav>
+
+    <h2>Using Regular Expressions in SAP by “Brute Force”</h2>
+
+    <h3>Gianmarco Corradini, 04.08.2026</h3>
+
+    <h1>Python Source Code</h1>
+
+    <p>
+      The following Python script searches accounting documents exported from SAP.
+      It does not execute regular expressions inside SAP. Instead, it reads a local
+      export and applies regex patterns to the downloaded journal entries.
+    </p>
+
+    <p>
+      The script supports both a CSV document list and a raw text journal. It can
+      search references, document-header texts, complete journal documents, document
+      headers, or individual booking sections.
+    </p>
+
+<pre><code class="language-python">&quot;&quot;&quot;
+Search SAP accounting exports with Python regular expressions.
+
+The script supports two common export formats:
+
+1. A CSV document list containing:
+   - Belegnummer
+   - Geschäftsjahr
+   - Referenz
+   - Belegkopftext
+
+2. A raw text journal in which accounting documents can be separated
+   by a company-code marker and divided into a header and booking lines.
+
+The searches are performed locally. No regex is executed inside SAP.
+&quot;&quot;&quot;
+
+from __future__ import annotations
+
+import re
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Iterable, Iterator
+
+import pandas as pd
+
+
+# --------------------------------------------------
+# Configuration
+# --------------------------------------------------
+
+CSV_FILE = Path(&quot;Belege_2.csv&quot;)
+JOURNAL_FILE = Path(&quot;Journal_10.txt&quot;)
+
+# Marker found at the beginning of each document in the raw journal.
+# Replace this value with the relevant company code or document marker.
+DOCUMENT_MARKER = &quot;0569&quot;
+
+# The original export separates the document header from its booking
+# lines with a value such as A123456.
+HEADER_SEPARATOR_PATTERN = re.compile(r&quot;A\d{6}&quot;)
+
+CSV_COLUMNS = [
+    &quot;Belegnummer&quot;,
+    &quot;Geschäftsjahr&quot;,
+    &quot;Referenz&quot;,
+    &quot;Belegkopftext&quot;,
+]
+
+
+# --------------------------------------------------
+# Data structure for raw journal documents
+# --------------------------------------------------
+
+@dataclass(frozen=True)
+class JournalDocument:
+    &quot;&quot;&quot;Represent one accounting document from the raw journal export.&quot;&quot;&quot;
+
+    raw_text: str
+    header: str
+    bookings: str
+
+
+# --------------------------------------------------
+# General helper functions
+# --------------------------------------------------
+
+def compile_pattern(
+    expression: str,
+    *,
+    ignore_case: bool = False,
+    multiline: bool = True,
+    dotall: bool = True,
+) -&gt; re.Pattern[str]:
+    &quot;&quot;&quot;
+    Compile a regular expression with practical defaults for SAP exports.
+
+    DOTALL allows the dot character to match line breaks, which is useful
+    when an accounting document spans several lines.
+    &quot;&quot;&quot;
+
+    flags = 0
+
+    if ignore_case:
+        flags |= re.IGNORECASE
+    if multiline:
+        flags |= re.MULTILINE
+    if dotall:
+        flags |= re.DOTALL
+
+    return re.compile(expression, flags)
+
+
+def contains_pattern(text: object, pattern: re.Pattern[str]) -&gt; bool:
+    &quot;&quot;&quot;Return True when the compiled regex occurs in the supplied value.&quot;&quot;&quot;
+
+    return pattern.search(str(text)) is not None
+
+
+# --------------------------------------------------
+# CSV document-list search
+# --------------------------------------------------
+
+def load_document_list(file_path: Path) -&gt; pd.DataFrame:
+    &quot;&quot;&quot;
+    Load a CSV document list and validate the required SAP columns.
+
+    dtype=str preserves leading zeroes in document numbers and references.
+    keep_default_na=False prevents empty cells from becoming the string &#x27;nan&#x27;.
+    &quot;&quot;&quot;
+
+    dataframe = pd.read_csv(
+        file_path,
+        dtype=str,
+        keep_default_na=False,
+    )
+
+    missing_columns = [
+        column
+        for column in CSV_COLUMNS
+        if column not in dataframe.columns
+    ]
+
+    if missing_columns:
+        missing = &quot;, &quot;.join(missing_columns)
+        raise ValueError(f&quot;Missing required CSV columns: {missing}&quot;)
+
+    return dataframe[CSV_COLUMNS].copy()
+
+
+def search_document_list(
+    dataframe: pd.DataFrame,
+    *,
+    column: str,
+    expression: str,
+    ignore_case: bool = False,
+) -&gt; pd.DataFrame:
+    &quot;&quot;&quot;
+    Return rows whose selected column matches a regular expression.
+
+    pandas performs the search over the complete column, avoiding a slow
+    row-by-row Python loop.
+    &quot;&quot;&quot;
+
+    if column not in dataframe.columns:
+        raise KeyError(f&quot;Unknown search column: {column}&quot;)
+
+    matches = dataframe[column].str.contains(
+        expression,
+        case=not ignore_case,
+        regex=True,
+        na=False,
+    )
+
+    return dataframe.loc[matches].copy()
+
+
+def print_document_list(results: pd.DataFrame) -&gt; None:
+    &quot;&quot;&quot;Print matching CSV rows in a readable table.&quot;&quot;&quot;
+
+    if results.empty:
+        print(&quot;No matching documents found.&quot;)
+        return
+
+    print(results.to_string(index=False))
+
+
+# --------------------------------------------------
+# Raw journal parsing
+# --------------------------------------------------
+
+def load_text_file(file_path: Path) -&gt; str:
+    &quot;&quot;&quot;
+    Read a text export.
+
+    utf-8-sig also accepts UTF-8 files that contain a byte-order mark.
+    Replace the encoding if the SAP export uses another character set.
+    &quot;&quot;&quot;
+
+    return file_path.read_text(
+        encoding=&quot;utf-8-sig&quot;,
+        errors=&quot;replace&quot;,
+    )
+
+
+def split_journal(
+    journal_text: str,
+    document_marker: str,
+) -&gt; list[str]:
+    &quot;&quot;&quot;
+    Split the raw journal into document blocks while preserving the marker.
+
+    re.escape treats the marker literally, even if it contains characters
+    that otherwise have a special meaning in regular expressions.
+    &quot;&quot;&quot;
+
+    marker_pattern = re.compile(
+        rf&quot;(?={re.escape(document_marker)})&quot;
+    )
+
+    return [
+        block.strip()
+        for block in marker_pattern.split(journal_text)
+        if block.strip()
+    ]
+
+
+def parse_journal_document(document_text: str) -&gt; JournalDocument:
+    &quot;&quot;&quot;
+    Divide one raw journal document into its header and booking section.
+
+    If no separator is found, the complete document is retained as the
+    header and the booking section is left empty.
+    &quot;&quot;&quot;
+
+    parts = HEADER_SEPARATOR_PATTERN.split(
+        document_text,
+        maxsplit=1,
+    )
+
+    header = parts[0].strip()
+    bookings = parts[1].strip() if len(parts) == 2 else &quot;&quot;
+
+    return JournalDocument(
+        raw_text=document_text,
+        header=header,
+        bookings=bookings,
+    )
+
+
+def load_journal_documents(
+    file_path: Path,
+    document_marker: str,
+) -&gt; list[JournalDocument]:
+    &quot;&quot;&quot;Load and parse all accounting documents in a raw journal export.&quot;&quot;&quot;
+
+    journal_text = load_text_file(file_path)
+    blocks = split_journal(journal_text, document_marker)
+
+    return [
+        parse_journal_document(block)
+        for block in blocks
+    ]
+
+
+# --------------------------------------------------
+# Raw journal search
+# --------------------------------------------------
+
+def search_journal(
+    documents: Iterable[JournalDocument],
+    *,
+    expressions: Iterable[str],
+    area: str = &quot;all&quot;,
+    require_all: bool = True,
+    ignore_case: bool = False,
+) -&gt; Iterator[JournalDocument]:
+    &quot;&quot;&quot;
+    Yield journal documents that satisfy one or more regex conditions.
+
+    area:
+        &quot;header&quot;   searches only the document header;
+        &quot;bookings&quot; searches only the booking lines;
+        &quot;all&quot;      searches the complete document.
+
+    require_all:
+        True  requires every expression to match;
+        False requires at least one expression to match.
+    &quot;&quot;&quot;
+
+    valid_areas = {&quot;header&quot;, &quot;bookings&quot;, &quot;all&quot;}
+
+    if area not in valid_areas:
+        raise ValueError(
+            f&quot;area must be one of: {&#x27;, &#x27;.join(sorted(valid_areas))}&quot;
+        )
+
+    patterns = [
+        compile_pattern(
+            expression,
+            ignore_case=ignore_case,
+        )
+        for expression in expressions
+    ]
+
+    if not patterns:
+        raise ValueError(&quot;At least one regular expression is required.&quot;)
+
+    for document in documents:
+        searchable_text = {
+            &quot;header&quot;: document.header,
+            &quot;bookings&quot;: document.bookings,
+            &quot;all&quot;: document.raw_text,
+        }[area]
+
+        pattern_results = [
+            contains_pattern(searchable_text, pattern)
+            for pattern in patterns
+        ]
+
+        is_match = (
+            all(pattern_results)
+            if require_all
+            else any(pattern_results)
+        )
+
+        if is_match:
+            yield document
+
+
+def print_journal_documents(
+    documents: Iterable[JournalDocument],
+) -&gt; None:
+    &quot;&quot;&quot;Print matching journal documents with clear separators.&quot;&quot;&quot;
+
+    found = False
+
+    for number, document in enumerate(documents, start=1):
+        found = True
+
+        print(&quot;=&quot; * 80)
+        print(f&quot;MATCH {number}&quot;)
+        print(&quot;=&quot; * 80)
+        print(document.raw_text)
+        print()
+
+    if not found:
+        print(&quot;No matching journal documents found.&quot;)
+
+
+# --------------------------------------------------
+# Examples
+# --------------------------------------------------
+
+def run_csv_examples() -&gt; None:
+    &quot;&quot;&quot;Run sample searches on the CSV document list.&quot;&quot;&quot;
+
+    documents = load_document_list(CSV_FILE)
+
+    print(&quot;\nReferences containing exactly five digits and beginning with 2&quot;)
+    print(&quot;-&quot; * 70)
+
+    reference_results = search_document_list(
+        documents,
+        column=&quot;Referenz&quot;,
+        expression=r&quot;^2\d{4}$&quot;,
+    )
+
+    print_document_list(reference_results)
+
+    print(&quot;\nHeader texts containing the complete word &#x27;Anwalt&#x27;&quot;)
+    print(&quot;-&quot; * 70)
+
+    header_results = search_document_list(
+        documents,
+        column=&quot;Belegkopftext&quot;,
+        expression=r&quot;\bAnwalt\b&quot;,
+        ignore_case=True,
+    )
+
+    print_document_list(header_results)
+
+
+def run_journal_examples() -&gt; None:
+    &quot;&quot;&quot;Run sample searches on the raw journal text export.&quot;&quot;&quot;
+
+    documents = load_journal_documents(
+        JOURNAL_FILE,
+        DOCUMENT_MARKER,
+    )
+
+    print(&quot;\nDocuments containing both account numbers&quot;)
+    print(&quot;-&quot; * 70)
+
+    account_results = search_journal(
+        documents,
+        expressions=[
+            r&quot;\b69610035\b&quot;,
+            r&quot;\b69619999\b&quot;,
+        ],
+        area=&quot;all&quot;,
+        require_all=True,
+    )
+
+    print_journal_documents(account_results)
+
+    print(&quot;\nDocuments whose header contains &#x27;TK&#x27;&quot;)
+    print(&quot;-&quot; * 70)
+
+    header_results = search_journal(
+        documents,
+        expressions=[r&quot;\bTK\b&quot;],
+        area=&quot;header&quot;,
+        require_all=True,
+        ignore_case=True,
+    )
+
+    print_journal_documents(header_results)
+
+    print(&quot;\nDocuments whose booking lines contain &#x27;TK&#x27;&quot;)
+    print(&quot;-&quot; * 70)
+
+    booking_results = search_journal(
+        documents,
+        expressions=[r&quot;\bTK\b&quot;],
+        area=&quot;bookings&quot;,
+        require_all=True,
+        ignore_case=True,
+    )
+
+    print_journal_documents(booking_results)
+
+
+# --------------------------------------------------
+# Program entry point
+# --------------------------------------------------
+
+def main() -&gt; None:
+    &quot;&quot;&quot;
+    Run the examples for files that are present.
+
+    Missing example files are reported separately so that the user can
+    use either the CSV search, the raw journal search, or both.
+    &quot;&quot;&quot;
+
+    if CSV_FILE.exists():
+        run_csv_examples()
+    else:
+        print(f&quot;CSV file not found: {CSV_FILE.resolve()}&quot;)
+
+    if JOURNAL_FILE.exists():
+        run_journal_examples()
+    else:
+        print(f&quot;Journal file not found: {JOURNAL_FILE.resolve()}&quot;)
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</code></pre>
+
+    <h2>Configuration</h2>
+
+    <p>
+      Place the exported files in the same directory as the Python script, or replace
+      <code>CSV_FILE</code> and <code>JOURNAL_FILE</code> with their actual paths.
+      The value assigned to <code>DOCUMENT_MARKER</code> must correspond to the
+      company-code or document marker appearing at the beginning of each document in
+      the raw journal export.
+    </p>
+
+    <p>
+      The CSV example expects the German SAP column names
+      <code>Belegnummer</code>, <code>Geschäftsjahr</code>,
+      <code>Referenz</code>, and <code>Belegkopftext</code>.
+      These names can be changed in <code>CSV_COLUMNS</code> when a different export
+      layout is used.
+    </p>
+
+    <h2>Search Examples</h2>
+
+    <p>
+      The first CSV example searches for references containing exactly five digits
+      and beginning with 2:
+    </p>
+
+<pre><code class="language-python">expression=r"^2\d{4}$"</code></pre>
+
+    <p>
+      The second CSV example searches the document-header text for the complete word
+      <code>Anwalt</code>, without distinguishing between uppercase and lowercase
+      letters.
+    </p>
+
+    <p>
+      The raw-journal example returns only documents containing both account numbers
+      <code>69610035</code> and <code>69619999</code>. Additional examples show how
+      to restrict a search to the document header or to the booking lines.
+    </p>
+
+    <h2>Main Improvements</h2>
+
+    <p>
+      The revised version separates file loading, parsing, searching, and printing
+      into independent functions. CSV searches are vectorized with pandas instead of
+      iterating through every row manually. Regular expressions are compiled once
+      and reused, and the raw journal is represented by a small data class containing
+      the complete document, its header, and its booking section.
+    </p>
+
+    <p>
+      The code also validates the CSV structure, preserves leading zeroes, handles
+      missing files explicitly, avoids unrestricted <code>try</code> and
+      <code>except</code> statements, and correctly searches each booking block
+      individually.
+    </p>
+
+    <h2>Requirements</h2>
+
+<pre><code>pip install pandas</code></pre>
+
+    <p>
+      The remaining modules used by the script are included in the Python standard
+      library.
+    </p>
+
+    <footer>All contents of this site are under this <a href='https://creativecommons.org/licenses/by/4.0'>license</a>.</footer>
+
+  </body>
+</html>
