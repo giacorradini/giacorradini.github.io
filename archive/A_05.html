@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en'>
+  <head>
+    
+    <meta charset='utf-8' />
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=2.0' />
+    <meta name='author' content='Gianmarco Corradini' />
+    <meta name='description' content='Personal site about Economics, Finance, Computational Theory.' />
+    <meta name='keywords' content='personal, website, economics, articles, books, finance, informatics' />
+
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@4.0.0/tex-mml-chtml.js"></script>
+    
+    <title>Gianmarco Corradini</title>
+    
+    <link rel="stylesheet" type="text/css" href="../simple.css" />
+    
+  </head>
+
+  <body>
+
+    <h1>Gianmarco Corradini</h1>
+
+    <nav><a href='../index.html'>Home</a> | <a href='../archive.html'>Archive</a> | <a href='../journal.html'>Journal</a> </nav>
+
+    <h2>Using Regular Expressions in SAP by “Brute Force”</h2>
+    
+    <h3>Gianmarco Corradini, 15.06.2025</h3>
+    
+    <p>
+      SAP is highly effective when data can be searched through predefined
+      fields such as document number, posting date, account, vendor, customer,
+      company code, or fiscal year.
+    </p>
+
+    <p>
+      However, SAP becomes less flexible when the user needs to search for
+      patterns inside textual fields. For example, it may be necessary to find
+      an invoice number containing a particular sequence of characters, a
+      document with a specific reference structure, or a journal entry whose
+      text follows a recurring format.
+    </p>
+
+    <p>
+      Regular expressions provide a natural solution to this problem, but they
+      are generally not available in standard SAP search transactions. A simple
+      workaround is therefore to export the journal entries from SAP and search
+      them externally with Python.
+    </p>
+
+    <p>
+      I refer to this approach as using regular expressions in SAP
+      <em>by brute force</em>. The regular expression is not executed inside
+      SAP. Instead, the accounting data is extracted from SAP and processed
+      locally with a program that supports regex.
+    </p>
+  </header>
+
+  <section>
+    <h2>The Basic Idea</h2>
+
+    <p>The procedure consists of four steps:</p>
+
+    <ol>
+      <li>Export the journal entries from SAP into a text file.</li>
+      <li>Read the exported file with Python.</li>
+      <li>Apply a regular expression to the exported entries.</li>
+      <li>Return or print only the accounting documents that match the pattern.</li>
+    </ol>
+
+    <p>
+      The search is therefore moved from SAP to Python. SAP remains responsible
+      for storing and exporting the accounting data, while Python performs the
+      pattern recognition.
+    </p>
+
+    <p>
+      This is a brute-force approach because the program can scan the complete
+      export, document by document, until it finds all occurrences of the
+      requested pattern.
+    </p>
+  </section>
+
+  <section>
+    <h2>Why Regular Expressions Are Useful</h2>
+
+    <p>
+      A standard SAP filter normally searches for a known value in a known
+      field. Regular expressions are more general. They describe the
+      <em>structure</em> of the value rather than only its exact content.
+    </p>
+
+    <p>
+      Suppose, for example, that an invoice number consists of five digits and
+      always begins with the number 2. The corresponding regular expression
+      could be written as:
+    </p>
+
+    <pre><code>^2\d{4}$</code></pre>
+
+    <p>This expression means:</p>
+
+    <ul>
+      <li><code>^</code> marks the beginning of the string;</li>
+      <li><code>2</code> requires the first character to be 2;</li>
+      <li><code>\d{4}</code> requires exactly four additional digits;</li>
+      <li><code>$</code> marks the end of the string.</li>
+    </ul>
+
+    <p>
+      The expression would match values such as:
+    </p>
+
+    <pre><code>20001
+24567
+29999</code></pre>
+
+    <p>
+      It would not match values such as:
+    </p>
+
+    <pre><code>12345
+2000
+200001</code></pre>
+
+    <p>
+      This distinction is difficult to express with an ordinary text filter,
+      but it is immediate with regex.
+    </p>
+  </section>
+
+  <section>
+    <h2>Exporting the Journal Entries</h2>
+
+    <p>
+      The first step is to extract the journal entries for the relevant company
+      code, fiscal year, posting period, or account selection.
+    </p>
+
+    <p>
+      The exact SAP transaction used for the export is not essential to the
+      method. What matters is that the result contains the accounting documents
+      and can be saved as a text-based file.
+    </p>
+
+    <p>
+      Depending on the SAP environment, the export may contain fields such as:
+    </p>
+
+    <ul>
+      <li>company code;</li>
+      <li>document number;</li>
+      <li>fiscal year;</li>
+      <li>posting date;</li>
+      <li>document date;</li>
+      <li>reference number;</li>
+      <li>document header text;</li>
+      <li>G/L account;</li>
+      <li>vendor or customer number;</li>
+      <li>line-item text;</li>
+      <li>debit and credit amounts.</li>
+    </ul>
+
+    <p>
+      Once the file has been downloaded, the information can be treated as
+      ordinary text. At that point, the limitations of the SAP search interface
+      no longer apply.
+    </p>
+  </section>
+
+  <section>
+    <h2>Reading the Export with Python</h2>
+
+    <p>
+      In my implementation, Python opens the exported SAP file and reads its
+      contents. The program then uses regular expressions to identify the
+      boundaries of the accounting documents and to search within them.
+    </p>
+
+    <p>
+      In simplified form, reading a text export can be represented as follows:
+    </p>
+
+    <pre><code>with open("sap_export.txt", "r", encoding="utf-8") as file:
+    sap_data = file.read()</code></pre>
+
+    <p>
+      The variable <code>sap_data</code> now contains the complete exported
+      journal as a string.
+    </p>
+
+    <p>
+      A regular expression can then be applied through Python's
+      <code>re</code> module:
+    </p>
+
+    <pre><code>import re
+
+pattern = r"^2\d{4}$"
+matches = re.findall(pattern, sap_data, re.MULTILINE)</code></pre>
+
+    <p>
+      The actual program is more structured because the objective is not merely
+      to return isolated strings. The useful result is normally the complete
+      journal entry or accounting document in which the pattern appears.
+    </p>
+  </section>
+
+  <section>
+    <h2>Searching Complete Accounting Documents</h2>
+
+    <p>
+      One important feature of the method is that the search does not need to be
+      restricted to a single SAP field.
+    </p>
+
+    <p>
+      After the export, an accounting document can be treated as a block of
+      text. The regular expression can therefore search across the information
+      associated with the complete document.
+    </p>
+
+    <p>
+      For example, it is possible to search for a document containing:
+    </p>
+
+    <ul>
+      <li>a particular invoice-number structure;</li>
+      <li>a specific sequence in the reference field;</li>
+      <li>a word in the document header;</li>
+      <li>a particular G/L account;</li>
+      <li>a vendor or customer number;</li>
+      <li>a recurring line-item description;</li>
+      <li>a combination of several patterns.</li>
+    </ul>
+
+    <p>
+      This can be particularly useful when the exact value is unknown but its
+      structure is known.
+    </p>
+
+    <p>
+      For example, the user may remember only that an invoice reference contains
+      the letters <code>INV</code>, followed by a year and a sequence number:
+    </p>
+
+    <pre><code>INV-2026-00451</code></pre>
+
+    <p>A possible regex would be:</p>
+
+    <pre><code>INV-\d{4}-\d+</code></pre>
+
+    <p>
+      The program can scan the complete export and return every accounting
+      document containing a reference with this structure.
+    </p>
+  </section>
+
+  <section>
+    <h2>Searching the Document Header and Line Items</h2>
+
+    <p>
+      The exported accounting document can also be divided into logical
+      components.
+    </p>
+
+    <p>For example:</p>
+
+    <ul>
+      <li>the document header;</li>
+      <li>the individual accounting line items.</li>
+    </ul>
+
+    <p>
+      This distinction allows the search to be more precise. A pattern may be
+      searched only in the header, only in the line items, or in the complete
+      accounting document.
+    </p>
+
+    <p>
+      Suppose that the objective is to find every document whose header text
+      contains the word <code>Anwalt</code>. A case-insensitive search could be
+      performed with:
+    </p>
+
+    <pre><code>pattern = r"\bAnwalt\b"
+
+result = re.search(
+    pattern,
+    document_header,
+    re.IGNORECASE
+)</code></pre>
+
+    <p>
+      If the pattern is found, the program can print the complete document,
+      including all related postings.
+    </p>
+
+    <p>
+      This is useful because the searched text provides the identification
+      criterion, while the full journal entry provides the accounting context.
+    </p>
+  </section>
+
+  <section>
+    <h2>Searching for Character Sequences</h2>
+
+    <p>
+      The original motivation for my program was the need to search for invoices
+      or accounting documents containing a specific sequence of characters.
+    </p>
+
+    <p>
+      Sometimes the complete reference is not known. Only a part of the
+      identifier is available. In other cases, several documents follow a
+      similar naming convention.
+    </p>
+
+    <p>
+      A basic substring search can already be useful:
+    </p>
+
+    <pre><code>pattern = r"ABC123"</code></pre>
+
+    <p>
+      However, regex makes it possible to generalize the search:
+    </p>
+
+    <pre><code>pattern = r"ABC\d{3}"</code></pre>
+
+    <p>
+      This expression searches for the letters <code>ABC</code> followed by
+      exactly three digits.
+    </p>
+
+    <p>It would therefore match:</p>
+
+    <pre><code>ABC001
+ABC123
+ABC999</code></pre>
+
+    <p>
+      The search is no longer limited to one known invoice. It identifies an
+      entire class of references sharing the same structure.
+    </p>
+  </section>
+
+  <section>
+    <h2>Combining Multiple Conditions</h2>
+
+    <p>
+      The external search can also combine multiple conditions.
+    </p>
+
+    <p>
+      For example, a document may be returned only when it contains both a
+      particular reference structure and a specific G/L account:
+    </p>
+
+    <pre><code>reference_found = re.search(
+    r"INV-\d{4}-\d+",
+    document
+)
+
+account_found = re.search(
+    r"\b440000\b",
+    document
+)
+
+if reference_found and account_found:
+    print(document)</code></pre>
+
+    <p>
+      This creates a simple form of document-level filtering.
+    </p>
+
+    <p>
+      The conditions can be extended to represent more specific accounting
+      investigations. For example, the program may search for documents that
+      contain:
+    </p>
+
+    <ul>
+      <li>one expense account;</li>
+      <li>one vendor number;</li>
+      <li>a particular textual description;</li>
+      <li>an invoice reference matching a defined structure.</li>
+    </ul>
+
+    <p>
+      These conditions would normally require several SAP filters or repeated
+      manual searches. In Python, they can be evaluated within the same
+      document block.
+    </p>
+  </section>
+
+  <section>
+    <h2>Why I Call It “Brute Force”</h2>
+
+    <p>
+      The expression <em>brute force</em> is used here informally.
+    </p>
+
+    <p>
+      The method does not integrate regular expressions into SAP. It bypasses
+      the limitation by exporting the data and scanning the resulting file.
+    </p>
+
+    <p>
+      Conceptually, the program performs the following operation:
+    </p>
+
+    <p>
+      \[
+      \text{Matching documents}
+      =
+      \left\{
+      d \in D :
+      R(d) = 1
+      \right\},
+      \]
+    </p>
+
+    <p>where:</p>
+
+    <ul>
+      <li>\(D\) is the set of exported accounting documents;</li>
+      <li>\(d\) is one accounting document;</li>
+      <li>\(R\) is the regular-expression search rule;</li>
+      <li>\(R(d)=1\) means that the document satisfies the pattern.</li>
+    </ul>
+
+    <p>
+      Every exported document is evaluated. If the regular expression matches,
+      the document is retained. Otherwise, it is discarded.
+    </p>
+
+    <p>
+      The method is direct and computationally simple. It does not require a
+      sophisticated SAP extension, a custom report, or ABAP development.
+    </p>
+  </section>
+
+  <section>
+    <h2>Practical Advantages</h2>
+
+    <p>
+      This approach offers several practical advantages.
+    </p>
+
+    <h3>Full Regex Support</h3>
+
+    <p>
+      Python supports advanced regular-expression features such as character
+      classes, repetitions, alternatives, groups, optional elements, and
+      lookarounds.
+    </p>
+
+    <h3>No SAP Customization</h3>
+
+    <p>
+      The method does not require changes to the SAP system. It can be used by
+      an accounting user who is able to export the journal entries and run a
+      local Python script.
+    </p>
+
+    <h3>Reusable Searches</h3>
+
+    <p>
+      Once a pattern has been defined, it can be stored and applied again to
+      future exports.
+    </p>
+
+    <h3>Document-Level Analysis</h3>
+
+    <p>
+      The search can consider the entire accounting document rather than only
+      one field at a time.
+    </p>
+
+    <h3>Flexible Output</h3>
+
+    <p>
+      The program can print matching documents, save them into another text
+      file, export them to CSV, or transform them into a structured table for
+      further analysis.
+    </p>
+  </section>
+
+  <section>
+    <h2>Limitations</h2>
+
+    <p>
+      The method also has some limitations.
+    </p>
+
+    <p>
+      First, it does not search live SAP data. It searches only the data
+      included in the export.
+    </p>
+
+    <p>
+      Second, the reliability of the program depends on the structure of the
+      exported file. If the SAP layout changes, the parsing logic may need to
+      be adjusted.
+    </p>
+
+    <p>
+      Third, the export must contain enough information to identify and
+      reconstruct the relevant accounting documents.
+    </p>
+
+    <p>
+      Finally, exported accounting data may contain confidential information.
+      The file should therefore be handled in accordance with the company's
+      data-security and retention policies.
+    </p>
+  </section>
+
+  <section>
+    <h2>Potential Applications</h2>
+
+    <p>
+      The same method can support several accounting and control activities,
+      including:
+    </p>
+
+    <ul>
+      <li>searching for incomplete invoice references;</li>
+      <li>identifying recurring naming structures;</li>
+      <li>finding documents containing unusual character sequences;</li>
+      <li>locating postings associated with a particular external system;</li>
+      <li>detecting inconsistent reference formats;</li>
+      <li>searching document texts during reconciliations;</li>
+      <li>supporting internal accounting investigations;</li>
+      <li>performing simple data-quality controls.</li>
+    </ul>
+
+    <p>
+      The method is especially useful for one-off investigations where creating
+      a dedicated SAP report would be disproportionate.
+    </p>
+  </section>
+
+  <section>
+    <h2>Conclusion</h2>
+
+    <p>
+      Standard SAP transactions provide powerful structured filters, but they
+      do not normally provide the flexibility of regular expressions.
+    </p>
+
+    <p>
+      A practical workaround is to export the journal entries and search them
+      externally with Python. The program reads the exported file, separates or
+      identifies the accounting documents, applies a regex pattern, and returns
+      the relevant entries.
+    </p>
+
+    <p>
+      This does not introduce regex into SAP in a technical sense. Instead, it
+      extends the analysis process outside SAP.
+    </p>
+
+    <p>
+      For this reason, the method can be described as using regular expressions
+      in SAP <em>by brute force</em>: the data is extracted, every relevant
+      accounting document is scanned, and the limitations of the SAP search
+      interface are overcome through external processing.
+    </p>
+
+  </section>
+
+
+    <footer>All contents of this site are under this <a href='https://creativecommons.org/licenses/by/4.0'>license</a>.</footer>
+
+  </body>
+</html>
